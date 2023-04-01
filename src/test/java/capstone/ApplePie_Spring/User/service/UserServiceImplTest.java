@@ -27,7 +27,7 @@ class UserServiceImplTest {
                 .corp(true)
                 .build();
 
-        User user = signupDto.toEntity(signupDto);
+        User user = signupDto.toUser();
         User findUser = userRepository.save(user);
         Assertions.assertThat(findUser.getNickname().equals("test"));
 

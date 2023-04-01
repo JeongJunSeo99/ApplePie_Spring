@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
         try {
             String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
             signupDto.setPassword(encodedPassword);
-            userRepository.save(signupDto.toEntity(signupDto));
+            userRepository.save(signupDto.toUser());
             System.out.println("UserServiceImpl.signup");
             return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
         } catch (Exception exception) {
@@ -70,12 +70,10 @@ public class UserServiceImpl implements UserService{
     }
 
     private boolean validateDuplicateEmail(String email) {
-        Optional<User> findUser = userRepository.findByEmailAndStatus(email, 1);
-        return findUser.isPresent();
+        return userRepository.existsByEmailAndStatus(email, 1);
     }
 
     private boolean validateDuplicateNickname(String nickname) {
-        Optional<User> findUser = userRepository.findByNicknameAndStatus(nickname, 1);
-        return findUser.isPresent();
+        return userRepository.existsByNicknameAndStatus(nickname, 1);
     }
 }

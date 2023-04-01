@@ -36,17 +36,16 @@ public class SignupDto {
         this.corp = corp;
     }
 
-    public User toEntity(SignupDto signupDto) {
+    public User toUser() {
         return User.builder()
-                .email(signupDto.getEmail())
-                .password(signupDto.getPassword())
-                .nickname(signupDto.getNickname())
-                .name(signupDto.getName())
-                .gender(signupDto.getGender())
-                .age(signupDto.getAge())
-                .birth(signupDto.getBirth())
-                .corp(signupDto.isCorp())
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .name(name)
+                .gender(gender)
+                .age(age)
+                .birth(birth)
+                .corp(corp)
                 .build();
     }
-
 }

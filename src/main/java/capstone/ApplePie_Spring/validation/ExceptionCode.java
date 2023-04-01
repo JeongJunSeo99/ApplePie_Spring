@@ -21,8 +21,10 @@ public enum ExceptionCode {
     USER_FIND_OK(SUCCESS, "C001", "회원정보 조회 성공"),
     USER_UPDATE_OK(SUCCESS, "C002", "회원정보 수정 성공"),
 
-    PROFILE_FIND_OK(SUCCESS, "D000", "PROFILE 조회 성공"),
+    PROFILE_CREATED_OK(SUCCESS, "D000", "PROFILE 생성"),
     PROFILE_FIND_NOT(SUCCESS, "D001", "PROFILE 없음"),
+    PROFILE_CREATED_ERROR(DUPLICATED_VALUE, "D002", "PROFILE 존재"),
+    PROFILE_FIND_OK(SUCCESS, "D003", "PROFILE 조회 성공"),
 
     /**
      * 잘못된 ExceptionCode

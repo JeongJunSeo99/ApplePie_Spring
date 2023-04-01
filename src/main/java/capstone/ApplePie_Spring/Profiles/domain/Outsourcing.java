@@ -1,8 +1,10 @@
-package capstone.ApplePie_Spring.domain.Profile;
+package capstone.ApplePie_Spring.Profiles.domain;
 
+import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +15,8 @@ public class Outsourcing extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "outsourcing_id")
-    private Long outsourcingId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(nullable = false)
     private String career;
@@ -23,10 +25,25 @@ public class Outsourcing extends BaseEntity {
     private String outsourcingSelf;
 
     @Column(nullable = false)
-    private Boolean open;
+    private boolean open;
 
     // 연관 관계 매핑
-
     @OneToOne
     private Profile profile;
+
+    // 연관관계 메소드
+    public void delete() {
+        super.delete();
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    @Builder
+    public Outsourcing(String career, String outsourcingSelf, boolean open) {
+        this.career = career;
+        this.outsourcingSelf = outsourcingSelf;
+        this.open = open;
+    }
 }
