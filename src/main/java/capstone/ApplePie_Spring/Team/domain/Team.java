@@ -1,7 +1,7 @@
-package capstone.ApplePie_Spring.domain.Team;
+package capstone.ApplePie_Spring.Team.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
-import capstone.ApplePie_Spring.domain.Board.Board;
+import capstone.ApplePie_Spring.Board.domain.Board;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,8 +16,8 @@ import java.util.List;
 public class Team extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "team_id")
-    private Long teamId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "team_name", nullable = false)
     private String teamName;

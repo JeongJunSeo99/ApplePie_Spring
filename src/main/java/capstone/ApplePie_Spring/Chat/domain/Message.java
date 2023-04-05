@@ -1,4 +1,4 @@
-package capstone.ApplePie_Spring.domain.Chat;
+package capstone.ApplePie_Spring.Chat.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
@@ -14,8 +14,8 @@ public class Message extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
-    private Long messageId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(nullable = false)
     private String sender;

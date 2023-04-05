@@ -1,6 +1,6 @@
-package capstone.ApplePie_Spring.domain.Chat;
+package capstone.ApplePie_Spring.Chat.domain;
 
-import capstone.ApplePie_Spring.domain.User;
+import capstone.ApplePie_Spring.User.domain.User;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,8 +17,8 @@ public class ChatJoin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatJoin_id")
-    private Long chatJoinId;
+    @Column(name = "id")
+    private Long id;
 
     // 연관 관계 매핑
 

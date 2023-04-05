@@ -1,4 +1,4 @@
-package capstone.ApplePie_Spring.domain.Chat;
+package capstone.ApplePie_Spring.Chat.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
@@ -16,8 +16,8 @@ public class Chatroom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatroom_id")
-    private Long chatroomId;
+    @Column(name = "id")
+    private Long id;
 
     // 연관 관계 매핑
 

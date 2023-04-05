@@ -1,8 +1,8 @@
-package capstone.ApplePie_Spring.domain.Board;
+package capstone.ApplePie_Spring.Board.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
-import capstone.ApplePie_Spring.domain.Team.Team;
-import capstone.ApplePie_Spring.domain.User;
+import capstone.ApplePie_Spring.Team.domain.Team;
+import capstone.ApplePie_Spring.User.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,8 +19,8 @@ import java.util.List;
 public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
-    private Long boardId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -41,6 +41,6 @@ public class Board extends BaseEntity {
     @OneToOne
     private Category category; // 단방향 매핑
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
     private List<File> files = new ArrayList<>();
 }

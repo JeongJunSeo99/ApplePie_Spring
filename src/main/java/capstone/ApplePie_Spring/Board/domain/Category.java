@@ -1,4 +1,4 @@
-package capstone.ApplePie_Spring.domain.Team;
+package capstone.ApplePie_Spring.Board.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
@@ -8,18 +8,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "MEMBER")
-public class Member extends BaseEntity {
+@Entity(name = "CATEGORY")
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long memberId;
+    @Column(name = "id")
+    private Long id;
 
-    private String part;
+    @Column(nullable = false)
+    private String title;
 
-    // 연관 관계 매핑
-
-    @ManyToOne
-    private Team team;
+    private String content;
 }
