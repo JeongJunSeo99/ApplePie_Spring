@@ -1,7 +1,6 @@
 package capstone.ApplePie_Spring.Board.service;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
-import capstone.ApplePie_Spring.Board.domain.File;
 import capstone.ApplePie_Spring.Board.dto.FileDto;
 import capstone.ApplePie_Spring.Board.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +40,7 @@ public class FileServiceImpl implements FileService {
                     .size(size)
                     .extension(extension)
                     .build();
-            File file = File.builder()
-                    .fileDto(fileDto)
-                    .board(board)
-                    .build();
-            FileRepository.save(file);
+            FileRepository.save(fileDto.toFile(board));
         } catch (Exception e) {
             return false;
         }

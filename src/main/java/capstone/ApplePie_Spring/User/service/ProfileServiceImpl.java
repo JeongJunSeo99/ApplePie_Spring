@@ -22,11 +22,13 @@ public class ProfileServiceImpl implements ProfileService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
+    private static final Integer STATUS = 1;
+
     @Override
     public Object find(Long userId) {
-        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, 1);
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
         if (findProfile.isEmpty()) {
-            Optional<User> findUser = userRepository.findByIdAndStatus(userId, 1);
+            Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
             return new ResponseFindUser(ExceptionCode.PROFILE_FIND_OK, findUser.get(), null);
         }
         Profile profile = findProfile.get();
@@ -41,20 +43,19 @@ public class ProfileServiceImpl implements ProfileService {
             return new ResponseUser(ExceptionCode.USER_ERROR);
         }
 
-        boolean existProfile = profileRepository.existsByUserIdAndStatus(userId, 1);
+        boolean existProfile = profileRepository.existsByUserIdAndStatus(userId, STATUS);
         if (existProfile) {
             return new ResponseUser(ExceptionCode.PROFILE_CREATED_ERROR);
         }
 
-        Profile profile = profileDto.toProfile();
-        profile.setUser(findUser.get()); // 연관 관계 설정
+        Profile profile = profileDto.toProfile(findUser.get());
         profileRepository.save(profile);
         return new ResponseUser(ExceptionCode.PROFILE_CREATED_OK);
     }
 
     @Override
     public Object update(Long userId, ProfileDto profileDto) {
-        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, 1);
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
         if (findProfile.isEmpty()) {
             return new ResponseUser(ExceptionCode.USER_ERROR);
         }
@@ -69,7 +70,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private boolean validateUser(Long userId) {
-        Optional<User> findUser = userRepository.findByIdAndStatus(userId, 1);
+        Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
         return findUser.isPresent();
     }
 }

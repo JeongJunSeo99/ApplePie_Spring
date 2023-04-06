@@ -24,28 +24,26 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
 
+    private static final Integer STATUS = 1;
+
     @Override
-    public Object signup(SignupDto signupDto) {
+    public Object signup(SignupDto signupDto) throws Exception {
         if (validateDuplicateEmail(signupDto.getEmail())) { // email 중복
             return new ResponseUser(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
         } else if (validateDuplicateNickname(signupDto.getNickname())) { // nickname 중복
             return new ResponseUser(ExceptionCode.SIGNUP_DUPLICATED_NICKNAME);
         }
 
-        try {
-            String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
-            signupDto.setPassword(encodedPassword);
-            userRepository.save(signupDto.toUser());
-            System.out.println("UserServiceImpl.signup");
-            return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
-        } catch (Exception exception) {
-            return new ResponseUser(ExceptionCode.USER_ERROR);
-        }
+        String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
+        signupDto.setPassword(encodedPassword);
+        userRepository.save(signupDto.toUser());
+        System.out.println("UserServiceImpl.signup");
+        return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
     }
 
     @Override
     public Object login(LoginDto loginDto) {
-        Optional<User> findUser = userRepository.findByEmailAndStatus(loginDto.getEmail(), 1);
+        Optional<User> findUser = userRepository.findByEmailAndStatus(loginDto.getEmail(), STATUS);
         if (findUser.isEmpty()) {
             return new ResponseLogin(ExceptionCode.LOGIN_NOT_FOUND_EMAIL, null);
         }
@@ -60,7 +58,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Object delete(Long userId) {
-        Optional<User> findUser = userRepository.findByIdAndStatus(userId, 1);
+        Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
         if (findUser.isEmpty()) {
             return new ResponseUser(ExceptionCode.USER_ERROR);
         }
@@ -70,10 +68,10 @@ public class UserServiceImpl implements UserService{
     }
 
     private boolean validateDuplicateEmail(String email) {
-        return userRepository.existsByEmailAndStatus(email, 1);
+        return userRepository.existsByEmailAndStatus(email, STATUS);
     }
 
     private boolean validateDuplicateNickname(String nickname) {
-        return userRepository.existsByNicknameAndStatus(nickname, 1);
+        return userRepository.existsByNicknameAndStatus(nickname, STATUS);
     }
 }

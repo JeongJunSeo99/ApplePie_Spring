@@ -1,5 +1,6 @@
 package capstone.ApplePie_Spring.User.domain;
 
+import capstone.ApplePie_Spring.User.dto.SignupDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import capstone.ApplePie_Spring.Board.domain.Board;
 import capstone.ApplePie_Spring.Chat.domain.ChatJoin;
@@ -57,16 +58,15 @@ public class User extends BaseEntity {
     private Profile profile;
 
     @Builder
-    public User(String email, String name, String nickname, String password,
-                char gender, int age, LocalDate birth, boolean corp) {
-        this.email = email;
-        this.name = name;
-        this.nickname = nickname;
-        this.password = password;
-        this.gender = gender;
-        this.age = age;
-        this.birth = birth;
-        this.corp = corp;
+    public User(SignupDto signupDto) {
+        this.email = signupDto.getEmail();
+        this.name = signupDto.getName();
+        this.nickname = signupDto.getNickname();
+        this.password = signupDto.getPassword();
+        this.gender = signupDto.getGender();
+        this.age = signupDto.getAge();
+        this.birth = signupDto.getBirth();
+        this.corp = signupDto.isCorp();
     }
 
     // 연관관계 메소드

@@ -2,6 +2,7 @@ package capstone.ApplePie_Spring.User.dto;
 
 import capstone.ApplePie_Spring.User.domain.Profile;
 
+import capstone.ApplePie_Spring.User.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,15 +32,10 @@ public class ProfileDto {
         this.devLanguage = devLanguage;
     }
 
-    public Profile toProfile() {
+    public Profile toProfile(User user) {
         return Profile.builder()
-                .area(area)
-                .college(college)
-                .github(github)
-                .grade(grade)
-                .grader(grader)
-                .devFramework(devFramework)
-                .devLanguage(devLanguage)
+                .profileDto(this)
+                .user(user)
                 .build();
     }
 }

@@ -1,5 +1,7 @@
 package capstone.ApplePie_Spring.Board.dto;
 
+import capstone.ApplePie_Spring.Board.domain.Board;
+import capstone.ApplePie_Spring.Board.domain.File;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,5 +16,12 @@ public class FileDto {
         this.name = name;
         this.size = size;
         this.extension = extension;
+    }
+
+    public File toFile(Board board) {
+        return File.builder()
+                .fileDto(this)
+                .board(board)
+                .build();
     }
 }

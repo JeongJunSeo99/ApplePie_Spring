@@ -6,35 +6,35 @@ import capstone.ApplePie_Spring.User.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/home")
+    @GetMapping
     public String test() {
         return "ApplePie!";
     }
 
     // 회원가입
-    @PostMapping("/users/signup")
-    public ResponseEntity<Object> signup(@RequestBody SignupDto signupDto) {
+    @PostMapping("/signup")
+    public ResponseEntity<Object> signup(@RequestBody SignupDto signupDto) throws Exception {
         return new ResponseEntity<>(userService.signup(signupDto), HttpStatus.OK);
     }
 
     // 로그인
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginDto loginDto) {
         return new ResponseEntity<>(userService.login(loginDto), HttpStatus.OK);
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
         return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
     }

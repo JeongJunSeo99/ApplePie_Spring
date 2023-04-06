@@ -5,12 +5,8 @@ import capstone.ApplePie_Spring.validation.ExceptionCode;
 
 import javax.annotation.Nullable;
 
-public class ResponseBoard extends ResponseNoBoard {
-
-    private Long boardId;
-
-    public ResponseBoard(ExceptionCode exceptionCode, Long boardId) {
+public class ResponseNoBoard extends ResponseType {
+    public ResponseNoBoard(ExceptionCode exceptionCode) {
         super(exceptionCode);
-        this.boardId = boardId;
     }
 }

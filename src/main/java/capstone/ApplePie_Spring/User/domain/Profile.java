@@ -74,14 +74,13 @@ public class Profile extends BaseEntity {
     }
 
     @Builder
-    public Profile(String college, float grade, String area, String grader, String github,
-                   String devFramework, String devLanguage) {
-        this.college = college;
-        this.grade = grade;
-        this.area = area;
-        this.grader = grader;
-        this.github = github;
-        this.devFramework = devFramework;
-        this.devLanguage = devLanguage;
+    public Profile(ProfileDto profileDto, User user) {
+        this.college = profileDto.getCollege();
+        this.grade = profileDto.getGrade();
+        this.area = profileDto.getArea();
+        this.grader = profileDto.getArea();
+        this.github = profileDto.getGithub();
+        this.devFramework = profileDto.getDevFramework();
+        this.devLanguage = profileDto.getDevLanguage();
     }
 }

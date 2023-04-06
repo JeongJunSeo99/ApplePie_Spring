@@ -31,6 +31,7 @@ public class File extends BaseEntity {
         this.name = fileDto.getName();
         this.size = fileDto.getSize();
         this.extension = fileDto.getExtension();
+
         this.board = board;
         board.getFiles().add(this);
     }

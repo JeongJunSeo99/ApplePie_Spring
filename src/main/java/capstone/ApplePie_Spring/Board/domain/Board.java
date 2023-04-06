@@ -71,6 +71,7 @@ public class Board extends BaseEntity {
         this.content = boardSaveDto.getContent();
         this.view_count = 0;
         this.category = Category.getValue(boardSaveDto.getCategory());
+
         this.user = user;
     }
 }

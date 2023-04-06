@@ -38,14 +38,7 @@ public class SignupDto {
 
     public User toUser() {
         return User.builder()
-                .email(email)
-                .password(password)
-                .nickname(nickname)
-                .name(name)
-                .gender(gender)
-                .age(age)
-                .birth(birth)
-                .corp(corp)
+                .signupDto(this)
                 .build();
     }
 }
