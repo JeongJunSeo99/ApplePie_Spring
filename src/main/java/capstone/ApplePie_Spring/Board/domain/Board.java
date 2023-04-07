@@ -4,6 +4,7 @@ import capstone.ApplePie_Spring.Board.dto.BoardSaveDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.User.domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,9 +34,11 @@ public class Board extends BaseEntity {
 
     // 연관 관계 매핑
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 
+    @JsonIgnore
     @OneToOne
     private Team team;
 

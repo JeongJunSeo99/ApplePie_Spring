@@ -1,16 +1,16 @@
 package capstone.ApplePie_Spring.Board.resposne;
 
-import capstone.ApplePie_Spring.config.ResponseType;
+import capstone.ApplePie_Spring.Board.dto.FindOneBoardDto;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
+import lombok.Getter;
 
-import javax.annotation.Nullable;
-
+@Getter
 public class ResponseBoard extends ResponseNoBoard {
 
-    private Long boardId;
+    private Object data;
 
-    public ResponseBoard(ExceptionCode exceptionCode, Long boardId) {
+    public ResponseBoard(ExceptionCode exceptionCode, FindOneBoardDto findOneBoardDto) {
         super(exceptionCode);
-        this.boardId = boardId;
+        this.data = findOneBoardDto;
     }
 }

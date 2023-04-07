@@ -1,5 +1,6 @@
 package capstone.ApplePie_Spring.Board.controller;
 
+import capstone.ApplePie_Spring.Board.dto.BoardFindDto;
 import capstone.ApplePie_Spring.Board.dto.BoardSaveDto;
 import capstone.ApplePie_Spring.Board.service.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,18 @@ public class BoardController {
             @RequestPart(value = "board") BoardSaveDto boardSaveDto,
             @RequestPart(value = "file", required = false) List<MultipartFile> files) throws Exception {
         return new ResponseEntity<>(boardService.save(boardSaveDto, files), HttpStatus.OK);
+    }
+
+    // 단일 글 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getBoardOne(@PathVariable long id) {
+        return new ResponseEntity<>(boardService.findOne(id), HttpStatus.OK);
+    }
+
+
+    // 전체 글 조회
+    @GetMapping
+    public ResponseEntity<Object> getBoards(@RequestBody BoardFindDto boardFindDto) {
+        return new ResponseEntity<>(boardService.BoardPagesBy(boardFindDto), HttpStatus.OK);
     }
 }
