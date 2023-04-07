@@ -48,12 +48,15 @@ public class User extends BaseEntity {
     private boolean corp;
 
     // 연관 관계 매핑
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<ChatJoin> joins = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<Board> board = new ArrayList<>();
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Profile profile;
 

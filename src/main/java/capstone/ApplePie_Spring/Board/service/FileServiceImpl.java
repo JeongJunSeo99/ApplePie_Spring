@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Board.service;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
+import capstone.ApplePie_Spring.Board.domain.File;
 import capstone.ApplePie_Spring.Board.dto.FileDto;
 import capstone.ApplePie_Spring.Board.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,15 +23,18 @@ public class FileServiceImpl implements FileService {
 
     @Value("${upload.path}")
     private String uploadPath;
-    public final FileRepository FileRepository;
+    public final FileRepository fileRepository;
 
-    public boolean save(Board board, long fileNumber, MultipartFile multipartFile) throws IOException {
+    private static final Integer STATUS = 1;
+
+    public boolean save(Board board, int fileNumber, MultipartFile multipartFile) throws IOException {
         try {
             String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
             String name = FilenameUtils.getBaseName(multipartFile.getName())
                     + board.getId() + '-' + fileNumber; // 중복 이름 방지
             java.io.File saveFile = new java.io.File(uploadPath + name + '.' + extension);
+            String url = saveFile.getPath();
             //System.out.println("saveFile.getPath() = " + saveFile.getPath());
 
             multipartFile.transferTo(saveFile);
@@ -39,11 +44,18 @@ public class FileServiceImpl implements FileService {
                     .name(name)
                     .size(size)
                     .extension(extension)
+                    .number(fileNumber)
+                    .url(url)
                     .build();
-            FileRepository.save(fileDto.toFile(board));
+            fileRepository.save(fileDto.toFile(board));
         } catch (Exception e) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Optional<File> findOne(Long boardId, int number) {
+        return fileRepository.findByBoardIdAndNumberAndStatus(boardId, number, STATUS);
     }
 }

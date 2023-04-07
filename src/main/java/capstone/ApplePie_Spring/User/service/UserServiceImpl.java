@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
     private static final Integer STATUS = 1;
 
     @Override
-    public Object signup(SignupDto signupDto) throws Exception {
+    public Object signup(SignupDto signupDto) {
         if (validateDuplicateEmail(signupDto.getEmail())) { // email 중복
             return new ResponseUser(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
         } else if (validateDuplicateNickname(signupDto.getNickname())) { // nickname 중복
@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService{
         String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
         signupDto.setPassword(encodedPassword);
         userRepository.save(signupDto.toUser());
-        System.out.println("UserServiceImpl.signup");
         return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
     }
 
@@ -50,7 +49,6 @@ public class UserServiceImpl implements UserService{
 
         User user = findUser.get();
         if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) { // 비밀번호 일치
-            System.out.println("UserServiceImpl.login");
             return new ResponseLogin(ExceptionCode.LOGIN_OK, user.getId());
         }
         return new ResponseLogin(ExceptionCode.LOGIN_NOT_FOUND_PW, null);
