@@ -3,7 +3,7 @@ package capstone.ApplePie_Spring.Board.dto;
 import lombok.Getter;
 
 @Getter
-public class BoardSaveDto {
+public class BoardUpdateDto {
     private String email;
 
     private String title;

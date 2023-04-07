@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 public class FindOneBoardDto {
 
+    private String nickname;
     private Long id;
     private String title;
     private String content;
@@ -22,6 +23,7 @@ public class FindOneBoardDto {
     @Builder
     public FindOneBoardDto(Board board, List<File> fileList) {
         this.id = board.getId();
+        this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         String findContent = board.getContent();
         this.content = board.getContent();
@@ -29,10 +31,10 @@ public class FindOneBoardDto {
         this.category = board.getCategory();
 
         files = new ArrayList<>();
-
-        for (File f : fileList) {
-            files.add(f.getUrl());
+        if (fileList != null) {
+            for (File f : fileList) {
+                files.add(f.getUrl());
+            }
         }
-
     }
 }

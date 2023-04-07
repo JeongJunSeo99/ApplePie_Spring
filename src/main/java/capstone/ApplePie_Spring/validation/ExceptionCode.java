@@ -8,7 +8,7 @@ public enum ExceptionCode {
     /**
      * 회원가입 및 로그인
      */
-    SIGNUP_CREATED_OK(CREATED, "A000", "회원가입 성공"),
+    SIGNUP_CREATED_OK(SUCCESS, "A000", "회원가입 성공"),
     SIGNUP_DUPLICATED_EMAIL(NOT_FOUND_VALUE, "A002", "중복된 EMAIL"),
     SIGNUP_DUPLICATED_NICKNAME(NOT_FOUND_VALUE, "A003", "중복된 NICKNAME"),
     WITHDRAW_USER_OK(SUCCESS, "A004", "회원 탈퇴 성공"),
@@ -30,6 +30,8 @@ public enum ExceptionCode {
     BOARD_CREATED_OK(SUCCESS, "H00", "BOARD 생성"),
     BOARD_FIND_NOT(SUCCESS, "H001", "BOARD 찾을 수 없음"),
     BOARD_FIND_OK(SUCCESS, "H002", "BOARD 조회 성공"),
+    BOARD_UPDATE_OK(SUCCESS, "H00", "BOARD 수정 성공"),
+    BOARD_DELETE_OK(SUCCESS, "H00", "BOARD 삭제 성공"),
 
     FILE_SAVE_NOT(INVALID_ACCESS, "I000", "FILE 저장 실패"),
 

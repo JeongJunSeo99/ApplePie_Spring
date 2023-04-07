@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
     File save(File file);
-    List<File> findByBoardIdAndStatus(Long boardId, int status);
+    List<File> findAllByBoardIdAndStatus(Long boardId, int status);
     Optional<File> findByBoardIdAndNumberAndStatus(Long boardId, int number, int status);
 }

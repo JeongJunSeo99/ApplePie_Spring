@@ -42,8 +42,8 @@ public class File extends BaseEntity {
         board.getFiles().add(this);
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public void delete() {
+        super.delete();
     }
 
 }

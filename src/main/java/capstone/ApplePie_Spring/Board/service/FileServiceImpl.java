@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +27,8 @@ public class FileServiceImpl implements FileService {
 
     private static final Integer STATUS = 1;
 
-    public boolean save(Board board, int fileNumber, MultipartFile multipartFile) throws IOException {
+    @Override
+    public File save(Board board, int fileNumber, MultipartFile multipartFile) {
         try {
             String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
@@ -47,15 +48,20 @@ public class FileServiceImpl implements FileService {
                     .number(fileNumber)
                     .url(url)
                     .build();
-            fileRepository.save(fileDto.toFile(board));
+            return fileRepository.save(fileDto.toFile(board));
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
-        return true;
     }
 
     @Override
     public Optional<File> findOne(Long boardId, int number) {
         return fileRepository.findByBoardIdAndNumberAndStatus(boardId, number, STATUS);
+    }
+
+
+    @Override
+    public List<File> findByBoardId(Long boardId) {
+        return fileRepository.findAllByBoardIdAndStatus(boardId, STATUS);
     }
 }

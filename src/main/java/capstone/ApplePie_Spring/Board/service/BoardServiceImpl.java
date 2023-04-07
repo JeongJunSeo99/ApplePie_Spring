@@ -1,10 +1,8 @@
 package capstone.ApplePie_Spring.Board.service;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
-import capstone.ApplePie_Spring.Board.dto.BoardFindDto;
-import capstone.ApplePie_Spring.Board.dto.BoardSaveDto;
-import capstone.ApplePie_Spring.Board.dto.FindBoardListDto;
-import capstone.ApplePie_Spring.Board.dto.FindOneBoardDto;
+import capstone.ApplePie_Spring.Board.domain.File;
+import capstone.ApplePie_Spring.Board.dto.*;
 import capstone.ApplePie_Spring.Board.repository.BoardRepository;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoard;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoardList;
@@ -15,6 +13,7 @@ import capstone.ApplePie_Spring.validation.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
@@ -44,19 +44,24 @@ public class BoardServiceImpl implements BoardService {
                 .user(findUser.get())
                 .build();
         boardRepository.save(board);
+        board.setFiles(addFiles(board, files));
 
-        boolean result;
-        if (!files.isEmpty()) { // 파일 크기는 front에서 처리
+        FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
+                .board(board)
+                .fileList(board.getFiles())
+                .build();
+        return new ResponseBoard(ExceptionCode.BOARD_CREATED_OK, findOneBoardDto);
+    }
+
+    private List<File> addFiles(Board board, List<MultipartFile> files) {
+        List<File> fileList = new ArrayList<>();
+        if (files != null) { // 파일 크기는 front에서 처리
             for (int i = 0; i < files.size(); i++) {
-                MultipartFile multipartFile = files.get(i);
-                result = fileService.save(board, i+1, files.get(i));
-                if (!result) {
-                    return new ResponseNoBoard(ExceptionCode.FILE_SAVE_NOT);
-                }
+                fileList.add(fileService.save(board, i+1, files.get(i)));
             }
         }
-
-        return new ResponseNoBoard(ExceptionCode.BOARD_CREATED_OK);
+        System.out.println("fileList.size() = " + fileList.size());
+        return fileList;
     }
 
     @Override
@@ -66,9 +71,12 @@ public class BoardServiceImpl implements BoardService {
             return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
         }
 
+        Board board = findBoard.get();
+        board.addViewCount();
+        board.setFiles(fileService.findByBoardId(boardId));
         FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
                 .board(findBoard.get())
-                .fileList(findBoard.get().getFiles())
+                .fileList(board.getFiles())
                 .build();
         return new ResponseBoard(ExceptionCode.BOARD_FIND_OK, findOneBoardDto);
     }
@@ -79,12 +87,48 @@ public class BoardServiceImpl implements BoardService {
 
         List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
         for (Board board : boardList) {
-            //Optional<File> file = fileService.findOne(board.getId(), 1);
             findBoardListDtoList.add(FindBoardListDto.builder()
-                    .board(board).fileList(board.getFiles()).build());
+                    .board(board)
+                    .file(fileService.findOne(board.getId(), 1))
+                    .build());
         }
 
         return new ResponseBoardList(ExceptionCode.BOARD_FIND_OK, findBoardListDtoList);
+    }
+
+    @Override
+    public Object update(Long id, BoardUpdateDto boardUpdateDto, List<MultipartFile> files) throws Exception {
+        Optional<Board> findBoard = boardRepository.findByIdAndStatus(id, STATUS);
+        if (findBoard.isEmpty()) {
+            return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
+        }
+
+        Board board = findBoard.get();
+        User user = userRepository.findByEmailAndStatus(boardUpdateDto.getEmail(), STATUS).get();
+        if (!user.getEmail().equals(boardUpdateDto.getEmail())) {
+            return new ResponseNoBoard(ExceptionCode.WRONG_APPROACH);
+        }
+
+        board.update(boardUpdateDto);
+        board.setFiles(addFiles(board, files));
+
+        FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
+                .board(board)
+                .fileList(board.getFiles())
+                //.fileList(fileService.findByBoardId(board.getId()))
+                .build();
+        return new ResponseBoard(ExceptionCode.BOARD_UPDATE_OK, findOneBoardDto);
+    }
+
+    @Override
+    public Object delete(Long id, String email) {
+        Optional<Board> findBoard = boardRepository.findByIdAndStatus(id, STATUS);
+        if (findBoard.isEmpty()) {
+            return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
+        }
+        Board board = findBoard.get();
+        board.delete();
+        return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_OK);
     }
 
     private List<Board> fetchPages(BoardFindDto boardFindDto)  {

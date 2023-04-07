@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Board.domain;
 
 import capstone.ApplePie_Spring.Board.dto.BoardSaveDto;
+import capstone.ApplePie_Spring.Board.dto.BoardUpdateDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.User.domain.User;
@@ -76,5 +77,32 @@ public class Board extends BaseEntity {
         this.category = Category.getValue(boardSaveDto.getCategory());
 
         this.user = user;
+    }
+
+    public void delete() {
+        for (File file : files) {
+            file.delete();
+        }
+        files.clear();
+        super.delete();
+    }
+
+    public void addViewCount() {
+        this.view_count += 1;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
+
+    public void update(BoardUpdateDto boardUpdateDto) {
+        this.title = boardUpdateDto.getTitle();
+        this.content = boardUpdateDto.getContent();
+        this.category = Category.getValue(boardUpdateDto.getCategory());
+
+        for (File file : files) {
+            file.delete();
+        }
+        files.clear();
     }
 }

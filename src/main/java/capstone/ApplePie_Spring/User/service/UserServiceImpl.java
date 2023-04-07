@@ -44,14 +44,14 @@ public class UserServiceImpl implements UserService{
     public Object login(LoginDto loginDto) {
         Optional<User> findUser = userRepository.findByEmailAndStatus(loginDto.getEmail(), STATUS);
         if (findUser.isEmpty()) {
-            return new ResponseLogin(ExceptionCode.LOGIN_NOT_FOUND_EMAIL, null);
+            return new ResponseUser(ExceptionCode.LOGIN_NOT_FOUND_EMAIL);
         }
 
         User user = findUser.get();
         if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) { // 비밀번호 일치
             return new ResponseLogin(ExceptionCode.LOGIN_OK, user.getId());
         }
-        return new ResponseLogin(ExceptionCode.LOGIN_NOT_FOUND_PW, null);
+        return new ResponseUser(ExceptionCode.LOGIN_NOT_FOUND_PW);
     }
 
     @Override
