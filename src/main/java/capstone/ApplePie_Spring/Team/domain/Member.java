@@ -3,6 +3,7 @@ package capstone.ApplePie_Spring.Team.domain;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,10 +17,22 @@ public class Member extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    private String part;
-
     // 연관 관계 매핑
 
     @ManyToOne
     private Team team;
+
+    @ManyToOne
+    private Volunteer volunteer;
+
+
+    public void delete() {
+        super.delete();
+    }
+
+    @Builder
+    public Member(Team team, Volunteer volunteer) {
+        this.team = team;
+        this.volunteer = volunteer;
+    }
 }

@@ -28,12 +28,26 @@ public enum ExceptionCode {
     PROFILE_FIND_OK(SUCCESS, "D003", "PROFILE 조회 성공"),
 
     BOARD_CREATED_OK(SUCCESS, "H00", "BOARD 생성"),
-    BOARD_FIND_NOT(SUCCESS, "H001", "BOARD 찾을 수 없음"),
+    BOARD_FIND_NOT(NOT_FOUND_VALUE, "H001", "BOARD 찾을 수 없음"),
     BOARD_FIND_OK(SUCCESS, "H002", "BOARD 조회 성공"),
-    BOARD_UPDATE_OK(SUCCESS, "H00", "BOARD 수정 성공"),
-    BOARD_DELETE_OK(SUCCESS, "H00", "BOARD 삭제 성공"),
+    BOARD_UPDATE_OK(SUCCESS, "H03", "BOARD 수정 성공"),
+    BOARD_DELETE_OK(SUCCESS, "H04", "BOARD 삭제 성공"),
 
     FILE_SAVE_NOT(INVALID_ACCESS, "I000", "FILE 저장 실패"),
+
+    TEAM_CREATED_OK(SUCCESS, "J00", "TEAM 생성"),
+    TEAM_FIND_NOT(NOT_FOUND_VALUE, "J001", "TEAM 찾을 수 없음"),
+    TEAM_FIND_OK(SUCCESS, "J002", "TEAM 조회 성공"),
+    TEAM_COMPLETE(SUCCESS, "J03", "TEAM 마감"),
+    TEAM_UPDATE_OK(SUCCESS, "J04", "TEAM 수정 성공"),
+    TEAM_DELETE_OK(SUCCESS, "J05", "TEAM 삭제 성공"),
+
+    VOLUNTEER_OK(SUCCESS, "H00", "지원자 저장"),
+    VOLUNTEER_CANCEL(SUCCESS, "H01", "지원자 취소"),
+    VOLUNTEER_FIND_NOT(NOT_FOUND_VALUE, "H01", "지원자 조회 실패"),
+
+    MEMBER_OK(SUCCESS, "I000", "팀원으로 처리 성공"),
+    MEMBER_FIND_OK(SUCCESS, "I001", "팀원 조회 성공"),
 
     /**
      * 잘못된 ExceptionCode
