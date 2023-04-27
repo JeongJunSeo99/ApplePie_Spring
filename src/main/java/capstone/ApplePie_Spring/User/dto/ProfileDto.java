@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProfileDto {
+    private String email;
+
     private String area;
     private String college;
     private String grader;
@@ -32,10 +34,9 @@ public class ProfileDto {
         this.devLanguage = devLanguage;
     }
 
-    public Profile toProfile(User user) {
-        return Profile.builder()
-                .profileDto(this)
-                .user(user)
+    public Profile toProfile(ProfileDto profileDto) {
+        return Profile.updateBuilder()
+                .profileDto(profileDto)
                 .build();
     }
 }

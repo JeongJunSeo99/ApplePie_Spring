@@ -39,7 +39,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     private char gender;
-    private int age;
+    //private int age;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;
@@ -56,7 +56,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     List<Board> board = new ArrayList<>();
 
-    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Profile profile;
 
@@ -67,7 +66,7 @@ public class User extends BaseEntity {
         this.nickname = signupDto.getNickname();
         this.password = signupDto.getPassword();
         this.gender = signupDto.getGender();
-        this.age = signupDto.getAge();
+        //this.age = signupDto.getAge();
         this.birth = signupDto.getBirth();
         this.corp = signupDto.isCorp();
     }

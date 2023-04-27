@@ -1,10 +1,11 @@
 package capstone.ApplePie_Spring.User.domain;
 
-import capstone.ApplePie_Spring.User.dto.ProfileDto;
-import capstone.ApplePie_Spring.config.BaseEntity;
 import capstone.ApplePie_Spring.Profiles.domain.Lesson;
 import capstone.ApplePie_Spring.Profiles.domain.Outsourcing;
 import capstone.ApplePie_Spring.Profiles.domain.Project;
+import capstone.ApplePie_Spring.User.dto.ProfileDto;
+import capstone.ApplePie_Spring.User.dto.SignupDto;
+import capstone.ApplePie_Spring.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -74,6 +75,18 @@ public class Profile extends BaseEntity {
     }
 
     @Builder
+    public Profile(SignupDto signupDto, User user) {
+        this.user = user;
+        this.college = signupDto.getCollege();
+        this.grade = signupDto.getGrade();
+        this.area = signupDto.getArea();
+        this.grader = signupDto.getArea();
+        this.github = signupDto.getGithub();
+        this.devFramework = signupDto.getDevFramework();
+        this.devLanguage = signupDto.getDevLanguage();
+    }
+
+    @Builder(builderMethodName = "updateBuilder")
     public Profile(ProfileDto profileDto, User user) {
         this.college = profileDto.getCollege();
         this.grade = profileDto.getGrade();

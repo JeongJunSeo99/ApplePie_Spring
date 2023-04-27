@@ -1,7 +1,10 @@
 package capstone.ApplePie_Spring.User.service;
 
-import capstone.ApplePie_Spring.User.Response.ResponseLogin;
-import capstone.ApplePie_Spring.User.Response.ResponseUser;
+import capstone.ApplePie_Spring.User.dto.ProfileDto;
+import capstone.ApplePie_Spring.User.response.ResponseProfile;
+import capstone.ApplePie_Spring.User.response.ResponseLogin;
+import capstone.ApplePie_Spring.User.response.ResponseUser;
+import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.User.domain.User;
 import capstone.ApplePie_Spring.User.dto.LoginDto;
 import capstone.ApplePie_Spring.User.dto.SignupDto;
@@ -36,7 +39,15 @@ public class UserServiceImpl implements UserService{
 
         String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
         signupDto.setPassword(encodedPassword);
-        userRepository.save(signupDto.toUser());
+
+        User user = signupDto.toUser();
+        userRepository.save(user);
+
+        Profile profile = Profile.builder()
+                .signupDto(signupDto)
+                .user(user)
+                .build();
+        profileRepository.save(profile);
         return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
     }
 
@@ -57,11 +68,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public Object delete(Long userId) {
         Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
-        if (findUser.isEmpty()) {
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
+        if (findUser.isEmpty() || findProfile.isEmpty()) {
             return new ResponseUser(ExceptionCode.USER_ERROR);
         }
-        User user = findUser.get();
-        user.delete();
+        findUser.get().delete();
+        findProfile.get().delete();
         return new ResponseUser(ExceptionCode.WITHDRAW_USER_OK);
     }
 
@@ -71,5 +83,33 @@ public class UserServiceImpl implements UserService{
 
     private boolean validateDuplicateNickname(String nickname) {
         return userRepository.existsByNicknameAndStatus(nickname, STATUS);
+    }
+
+
+    @Override
+    public Object findProfile(Long userId) {
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
+        if (findProfile.isEmpty()) {
+            Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
+            return new ResponseUser(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        Profile profile = findProfile.get();
+        User user = profile.getUser();
+        return new ResponseProfile(ExceptionCode.USER_PROFILE_FIND_OK, user, profile);
+    }
+
+    @Override
+    public Object updateProfile(Long userId, ProfileDto profileDto) {
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
+        if (findProfile.isEmpty()) {
+            return new ResponseUser(ExceptionCode.USER_ERROR);
+        }
+        try {
+            Profile profile = findProfile.get();
+            profile.update(profileDto); // 변경 감지
+            return new ResponseUser(ExceptionCode.USER_PROFILE_UPDATE_OK);
+        } catch (Exception exception) {
+            return new ResponseUser(ExceptionCode.USER_ERROR);
+        }
     }
 }

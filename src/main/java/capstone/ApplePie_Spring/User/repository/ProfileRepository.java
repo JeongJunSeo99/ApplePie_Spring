@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByIdAndStatus(Long id, int status);
     Optional<Profile> findByUserIdAndStatus(Long userId, int status);
-    boolean existsByUserIdAndStatus(Long userId, int status);
+    boolean existsByIdAndStatus(Long id, int status);
     Profile save(Profile profile);
 }
