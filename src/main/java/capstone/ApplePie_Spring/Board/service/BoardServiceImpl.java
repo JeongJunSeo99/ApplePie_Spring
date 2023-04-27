@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,12 +44,16 @@ public class BoardServiceImpl implements BoardService {
                 .boardSaveDto(boardSaveDto)
                 .user(findUser.get())
                 .build();
-        boardRepository.save(board);
+        Board createBoard = boardRepository.save(board);
         board.setFiles(addFiles(board, files));
+
+        List<String> urls = board.getFiles().stream()
+                .map(File::getUrl)
+                .collect(Collectors.toList());
 
         FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
                 .board(board)
-                .fileList(board.getFiles())
+                .urlList(urls)
                 .build();
         return new ResponseBoard(ExceptionCode.BOARD_CREATED_OK, findOneBoardDto);
     }
@@ -60,7 +65,6 @@ public class BoardServiceImpl implements BoardService {
                 fileList.add(fileService.save(board, i+1, files.get(i)));
             }
         }
-        System.out.println("fileList.size() = " + fileList.size());
         return fileList;
     }
 
@@ -74,9 +78,15 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard.get();
         board.addViewCount();
         board.setFiles(fileService.findByBoardId(boardId));
+
+
+        List<String> urls = board.getFiles().stream()
+                .map(File::getUrl)
+                .collect(Collectors.toList());
+
         FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
                 .board(findBoard.get())
-                .fileList(board.getFiles())
+                .urlList(urls)
                 .build();
         return new ResponseBoard(ExceptionCode.BOARD_FIND_OK, findOneBoardDto);
     }
@@ -112,10 +122,13 @@ public class BoardServiceImpl implements BoardService {
         board.update(boardUpdateDto);
         board.setFiles(addFiles(board, files));
 
+        List<String> urls = board.getFiles().stream()
+                .map(file -> file.getUrl())
+                .collect(Collectors.toList());
+
         FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
                 .board(board)
-                .fileList(board.getFiles())
-                //.fileList(fileService.findByBoardId(board.getId()))
+                .urlList(urls)
                 .build();
         return new ResponseBoard(ExceptionCode.BOARD_UPDATE_OK, findOneBoardDto);
     }

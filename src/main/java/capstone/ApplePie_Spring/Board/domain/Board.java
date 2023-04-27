@@ -44,9 +44,9 @@ public class Board extends BaseEntity {
     private Team team;
 
     public enum Category {
-        OUTSOURCING(1,"외주"),
-        LESSON(2,"과외"),
-        PROJECT(3, "공모전");
+        OUTSOURCING(0,"외주"),
+        LESSON(1,"과외"),
+        PROJECT(2, "공모전");
 
         private int id;
         private String name;

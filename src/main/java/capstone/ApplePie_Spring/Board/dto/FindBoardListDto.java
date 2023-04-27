@@ -16,12 +16,14 @@ public class FindBoardListDto {
     private String title;
     private String content;
     private int view_count;
+    private Board.Category categoryId;
     private String file;
 
     @Builder
     public FindBoardListDto(Board board, Optional<File> file) {
         this.id = board.getId();
         //this.nickname = board.getUser().getNickname();
+        this.categoryId = board.getCategory();
 
         this.title = board.getTitle();
         this.view_count = board.getView_count();

@@ -21,20 +21,13 @@ public class FindOneBoardDto {
     private List<String> files;
 
     @Builder
-    public FindOneBoardDto(Board board, List<File> fileList) {
+    public FindOneBoardDto(Board board, List<String> urlList) {
         this.id = board.getId();
         this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
-        String findContent = board.getContent();
         this.content = board.getContent();
         this.view_count = board.getView_count();
         this.category = board.getCategory();
-
-        files = new ArrayList<>();
-        if (fileList != null) {
-            for (File f : fileList) {
-                files.add(f.getUrl());
-            }
-        }
+        files = urlList;
     }
 }
