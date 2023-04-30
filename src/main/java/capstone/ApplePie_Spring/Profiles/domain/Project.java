@@ -1,7 +1,9 @@
 package capstone.ApplePie_Spring.Profiles.domain;
 
+import capstone.ApplePie_Spring.Profiles.dto.ProjectDto;
 import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.config.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,6 +30,7 @@ public class Project extends BaseEntity {
     private boolean open;
 
     // 연관 관계 매핑
+    @JsonIgnore
     @OneToOne
     private Profile profile;
 
@@ -36,14 +39,17 @@ public class Project extends BaseEntity {
         super.delete();
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
     @Builder
-    public Project(String part, String projectSelf, boolean open) {
+    public Project(String part, String projectSelf, boolean open, Profile profile) {
         this.part = part;
         this.projectSelf = projectSelf;
         this.open = open;
+        this.profile = profile;
+    }
+
+    public void update(ProjectDto projectDto) {
+        this.part = projectDto.getPart();
+        this.projectSelf = projectDto.getProjectSelf();
+        this.open = projectDto.isOpen();
     }
 }

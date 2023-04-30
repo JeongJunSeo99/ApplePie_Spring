@@ -1,7 +1,6 @@
 package capstone.ApplePie_Spring.Profiles.dto;
 
 import capstone.ApplePie_Spring.Profiles.domain.Project;
-import capstone.ApplePie_Spring.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProjectDto extends BaseEntity {
+public class ProjectDto {
     private String part;
     private String projectSelf;
     private boolean open;
@@ -28,9 +27,5 @@ public class ProjectDto extends BaseEntity {
                 .projectSelf(projectSelf)
                 .open(open)
                 .build();
-    }
-
-    public void delete() {
-        super.delete();
     }
 }

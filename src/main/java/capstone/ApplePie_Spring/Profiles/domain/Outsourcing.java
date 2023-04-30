@@ -1,7 +1,9 @@
 package capstone.ApplePie_Spring.Profiles.domain;
 
+import capstone.ApplePie_Spring.Profiles.dto.OutsourcingDto;
 import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.config.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,6 +30,7 @@ public class Outsourcing extends BaseEntity {
     private boolean open;
 
     // 연관 관계 매핑
+    @JsonIgnore
     @OneToOne
     private Profile profile;
 
@@ -36,14 +39,17 @@ public class Outsourcing extends BaseEntity {
         super.delete();
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
     @Builder
-    public Outsourcing(String career, String outsourcingSelf, boolean open) {
+    public Outsourcing(String career, String outsourcingSelf, boolean open, Profile profile) {
         this.career = career;
         this.outsourcingSelf = outsourcingSelf;
         this.open = open;
+        this.profile = profile;
+    }
+
+    public void update(OutsourcingDto outsourcingDto) {
+        this.career = outsourcingDto.getCareer();
+        this.outsourcingSelf = outsourcingDto.getOutsourcingSelf();
+        this.open = outsourcingDto.isOpen();
     }
 }

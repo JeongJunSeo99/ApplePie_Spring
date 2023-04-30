@@ -1,7 +1,6 @@
 package capstone.ApplePie_Spring.Profiles.dto;
 
 import capstone.ApplePie_Spring.Profiles.domain.Outsourcing;
-import capstone.ApplePie_Spring.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OutsourcingDto extends BaseEntity {
+public class OutsourcingDto {
     private String career;
     private String outsourcingSelf;
     private boolean open;
@@ -30,7 +29,4 @@ public class OutsourcingDto extends BaseEntity {
                 .build();
     }
 
-    public void delete() {
-        super.delete();
-    }
 }
