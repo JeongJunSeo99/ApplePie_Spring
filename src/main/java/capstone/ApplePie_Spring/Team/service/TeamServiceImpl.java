@@ -3,12 +3,18 @@ package capstone.ApplePie_Spring.Team.service;
 import capstone.ApplePie_Spring.Board.domain.Board;
 import capstone.ApplePie_Spring.Board.repository.BoardRepository;
 import capstone.ApplePie_Spring.Board.resposne.ResponseNoBoard;
+import capstone.ApplePie_Spring.Team.domain.Member;
+import capstone.ApplePie_Spring.Team.domain.TeamVolunteer;
 import capstone.ApplePie_Spring.Team.domain.Volunteer;
 import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.Team.dto.TeamDto;
+import capstone.ApplePie_Spring.Team.dto.TeamUpdateDto;
+import capstone.ApplePie_Spring.Team.repository.MemberRepository;
+import capstone.ApplePie_Spring.Team.repository.TeamVolunteerRepository;
 import capstone.ApplePie_Spring.Team.repository.VolunteerRepository;
 import capstone.ApplePie_Spring.Team.repository.TeamRepository;
 import capstone.ApplePie_Spring.Team.resposne.ResponseTeam;
+import capstone.ApplePie_Spring.Team.resposne.ResponseUserTeam;
 import capstone.ApplePie_Spring.User.domain.User;
 import capstone.ApplePie_Spring.User.repository.UserRepository;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
@@ -16,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,35 +32,201 @@ import java.util.Optional;
 public class TeamServiceImpl implements TeamService {
 
     private static final Integer STATUS = 1;
+    // private static final Integer COMPLETE = 2; TEAM에서는 TEAM_STATUS로 구분
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
     private final VolunteerRepository volunteerRepository;
+    private final TeamVolunteerRepository teamVolunteerRepository;
 
     public Object save(TeamDto teamDto) {
         Optional<Board> findBoard = boardRepository.findByIdAndStatus(teamDto.getBoardId(), STATUS);
+        Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(teamDto.getBoardId(), STATUS);
         if (findBoard.isEmpty()) {
             return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
+        }
+        else if (findTeam.isPresent()) {
+            return new ResponseTeam(ExceptionCode.TEAM_CREATED_ERROR);
         }
 
         Board board = findBoard.get();
         String email = findBoard.get().getUser().getEmail();
         User user = userRepository.findByEmailAndStatus(email, STATUS).get();
 
+        // team
         Team team = Team.builder()
                 .board(board)
                 .teamDto(teamDto)
+                .user(user)
                 .build();
         teamRepository.save(team);
+        board.setTeam(team);
 
         Volunteer volunteer = Volunteer.builder()
                 .team(team)
                 .user(user)
-                .part(teamDto.getPart())
+                .application(teamDto.getRole().name()) // 내용은 임시로 역할명
+                .role(teamDto.getRole())
+                .volunteerStatus(Volunteer.VolunteerStatus.APPLY)
                 .build();
         volunteerRepository.save(volunteer);
+        team.addVolunteer(volunteer);
+
+        // user
+        Member member = Member.builder()
+                .team(team)
+                .volunteer(volunteer)
+                .build();
+        memberRepository.save(member);
+        volunteer.setVolunteerStatus(Volunteer.VolunteerStatus.COMPLETE);
+        team.addMember(member);
+
+        // ai 칼럼
+        TeamVolunteer teamVolunteer = TeamVolunteer.builder()
+                .board(team.getBoard())
+                .user(user)
+                .role(teamDto.getRole())
+                .build();
+        teamVolunteerRepository.save(teamVolunteer);
 
         return new ResponseTeam(ExceptionCode.TEAM_CREATED_OK);
+    }
+
+    @Override
+    public Object complete(TeamUpdateDto teamUpdateDto) {
+        // 모든 인원 초과
+        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
+        if (team == null) {
+            return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
+        }
+        team.setTeamStatus(Team.TeamStatus.COMPLETE);
+        return new ResponseTeam(ExceptionCode.TEAM_COMPLETE);
+    }
+
+    @Override
+    public Object update(TeamDto teamDto) {
+        Optional<Board> findBoard = boardRepository.findByIdAndStatus(teamDto.getBoardId(), STATUS);
+        Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(teamDto.getBoardId(), STATUS);
+        if (findBoard.isEmpty()) {
+            return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
+        }
+        else if (findTeam.isEmpty()) {
+            return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
+        }
+
+        String email = findBoard.get().getUser().getEmail();
+        User user = userRepository.findByEmailAndStatus(email, STATUS).get();
+
+        // team count 처리
+        List<Integer> count = teamDto.getCount();
+        for (Volunteer volunteer : findTeam.get().getVolunteers()) {
+            if (volunteer.getVolunteerStatus().equals(Volunteer.VolunteerStatus.COMPLETE)) {
+                int i = volunteer.getRole().ordinal();
+                count.set(i, count.get(i)-1);
+            }
+        }
+        findTeam.get().updateTeam(teamDto, count);
+
+        Optional<Volunteer> findVolunteer = volunteerRepository
+                .findByUserIdAndTeamIdAndStatus(user.getId(), findTeam.get().getId(), STATUS);
+        if (findVolunteer.isPresent()) {
+            findVolunteer.get().updateVolunteer(teamDto);
+        }
+
+        // 모든 인원수가 이상인 경우에 complete 처리
+        for (int n : findTeam.get().getCount()) {
+            if (n > 0) {
+                return new ResponseTeam(ExceptionCode.TEAM_UPDATE_OK);
+            }
+        }
+        findTeam.get().setTeamStatus(Team.TeamStatus.COMPLETE);
+        return new ResponseTeam(ExceptionCode.TEAM_UPDATE_OK);
+    }
+
+    @Override
+    public Object delete(TeamUpdateDto teamUpdateDto) {
+        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
+        if (team == null) {
+            return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
+        }
+        team.delete();
+        return new ResponseTeam(ExceptionCode.TEAM_COMPLETE);
+    }
+
+    @Override
+    public Object findTeam(Long userId) {
+        List<Team> result1 = findCompleteTeam(userId);
+        List<Team> result2 = findUserTeam(userId);
+        List<Team> result3 = findApplyTeam(userId);
+        return new ResponseUserTeam(ExceptionCode.TEAM_FIND_OK,
+                result1, result2, result3);
+    }
+
+    @Override  // 지원한 팀 경우 -> 지원 취소 & 자기 팀인 경우 -> 팀 취소(team_status = 0처리)
+    public Object cancel(TeamUpdateDto teamUpdateDto) { // 모집 취소(중지)
+        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
+        if (team == null) {
+            return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
+        }
+
+        // 본인 팀인 경우
+        if (team.getUser().getId().equals(teamUpdateDto.getUserId())) {
+            team.setTeamStatus(Team.TeamStatus.CANCEL);
+            team.delete();
+            return new ResponseTeam(ExceptionCode.TEAM_DELETE_OK);
+        }
+        return new ResponseTeam(ExceptionCode.TEAM_DELETE_NOT);
+
+        /*// 지원한 팀인 경우
+        Volunteer volunteer = volunteerRepository
+                .findByUserIdAndTeamIdAndStatus(teamUpdateDto.getUserId(), team.getId(), STATUS).get();
+        if (volunteer.getVolunteerStatus().equals(Volunteer.VolunteerStatus.APPLY)) {
+            volunteer.delete();
+            team.removeVolunteer(volunteer);
+            return new ResponseTeam(ExceptionCode.VOLUNTEER_CANCEL_OK);
+        }
+        else {
+            return new ResponseTeam(ExceptionCode.VOLUNTEER_CANCEL_NOT);
+        }*/
+    }
+
+    public Team validation(Long teamId, int state) {
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(teamId, state);
+        return findTeam.orElse(null);
+    }
+
+    public List<Team> findUserTeam(Long userId) { // 내가 모집중인 팀 + 지원한 팀(멤버여도 팀이 완성되지 않은 경우)
+        return teamRepository.findAllByUserIdAndTeamStatusAndStatus(userId, Team.TeamStatus.CREATE, STATUS);
+    }
+
+    public List<Team> findApplyTeam(Long userId) {
+        List<Team> result = new ArrayList<>();
+
+        List<Volunteer> volunteers = findVolunteers(userId);
+        for (Volunteer volunteer : volunteers) {
+            Optional<Team> ownerTeam = teamRepository.findByIdAndTeamStatusAndStatus(volunteer.getTeam().getId(), Team.TeamStatus.CREATE, STATUS);
+            if (ownerTeam.isPresent() && ! ownerTeam.get().getUser().getId().equals(userId)) {
+                result.add(ownerTeam.get());
+            }
+        }
+        return result;
+    }
+
+    public List<Team> findCompleteTeam(Long userId) {
+        List<Team> result = new ArrayList<>();
+
+        List<Volunteer> volunteers = findVolunteers(userId);
+        for (Volunteer volunteer : volunteers) {
+            Optional<Team> ownerTeam = teamRepository.findByIdAndTeamStatusAndStatus(volunteer.getTeam().getId(), Team.TeamStatus.COMPLETE, STATUS);
+            ownerTeam.ifPresent(result::add);
+        }
+
+        return result;
+    }
+
+    public List<Volunteer> findVolunteers(Long userId) {
+        return volunteerRepository.findAllByUserIdAndStatus(userId, STATUS);
     }
 }

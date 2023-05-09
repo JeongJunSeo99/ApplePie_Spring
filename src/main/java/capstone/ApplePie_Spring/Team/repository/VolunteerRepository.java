@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
     Volunteer save(Volunteer volunteer);
     Optional<Volunteer> findByIdAndStatus(Long id, int status);
-    List<Volunteer> findByUserIdAndStatus(Long userId, int status);
-    List<Volunteer> findByTeamIdAndStatus(Long teamId, int status);
+    Optional<Volunteer> findByUserIdAndTeamIdAndStatus(Long userId, Long teamId, int status);
+    List<Volunteer> findAllByUserIdAndStatus(Long userId, int status);
+    List<Volunteer> findAllByTeamIdAndStatus(Long teamId, int status);
 }

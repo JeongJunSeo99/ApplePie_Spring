@@ -44,7 +44,6 @@ public class Board extends BaseEntity {
     @ManyToOne
     private User user;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "board")
     private Team team;
 
@@ -71,6 +70,7 @@ public class Board extends BaseEntity {
 
     private Category category; // 단방향 매핑
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
     private List<File> files = new ArrayList<>();
 

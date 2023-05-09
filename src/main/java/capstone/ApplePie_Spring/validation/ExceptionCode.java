@@ -45,6 +45,8 @@ public enum ExceptionCode {
     TEAM_FIND_OK(SUCCESS, "J003", "TEAM 조회 성공"),
     TEAM_COMPLETE(SUCCESS, "J004", "TEAM 마감"),
     TEAM_DELETE_OK(SUCCESS, "J005", "TEAM 삭제 성공"),
+    TEAM_DELETE_NOT(NOT_FOUND_VALUE, "J006", "TEAM 생성자가 아님"),
+    TEAM_UPDATE_OK(SUCCESS, "J007", "TEAM 업데이트"),
 
     VOLUNTEER_OK(SUCCESS, "K000", "지원 완료"),
     VOLUNTEER_CANCEL_OK(SUCCESS, "K001", "지원 취소"),

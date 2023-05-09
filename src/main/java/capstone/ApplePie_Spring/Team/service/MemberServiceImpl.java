@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Volunteer volunteer = findVolunteer.get();
-        Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(volunteer.getTeam().getId(), STATUS);
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(volunteer.getTeam().getId(), STATUS);
         if (findTeam.isEmpty()) {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
@@ -51,11 +51,11 @@ public class MemberServiceImpl implements MemberService {
 
         // 모든 인원수가 이상인 경우에 complete 처리
         for (int n : team.getCount()) {
-            if (n != 0) {
+            if (n > 0) {
                 return new ResponseMember(ExceptionCode.MEMBER_OK, team.getCount());
             }
         }
-
+        team.setTeamStatus(Team.TeamStatus.COMPLETE);
         return new ResponseTeam(ExceptionCode.TEAM_COMPLETE);
     }
 

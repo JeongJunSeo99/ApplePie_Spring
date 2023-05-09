@@ -1,14 +1,17 @@
 package capstone.ApplePie_Spring.Team.dto;
 
+import capstone.ApplePie_Spring.Team.domain.Volunteer;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class TeamDto {
     private Long boardId;
-
     private String teamName;
     private String teamContent;
+    private List<Integer> count;
     private int memberCount;
 
-    private String part; // 팀장 역할
+    private Volunteer.Role role; // 팀장 역할
 }
