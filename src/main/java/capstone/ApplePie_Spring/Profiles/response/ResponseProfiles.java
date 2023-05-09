@@ -16,71 +16,27 @@ import java.util.List;
 
 @Getter
 @Setter
-// @JsonInclude(JsonInclude.Include.NON_NULL) // null 정보  제거
+@JsonInclude(JsonInclude.Include.NON_NULL) // null 정보  제거
 public class ResponseProfiles extends ResponseType {
-    private List<Object> data;
     private LessonDto lesson;
     private ProjectDto project;
     private OutsourcingDto outsourcing;
 
-    public ResponseProfiles(ExceptionCode exceptionCode, Lesson lesson, Project project, Outsourcing outsourcing) {
-        super(exceptionCode);
-        toLessonDto(lesson);
-        toProjectDto(project);
-        toOutsourcingDto(outsourcing);
-    }
 
     public ResponseProfiles(ExceptionCode exceptionCode, Lesson lesson) {
         super(exceptionCode);
-        toLessonDto(lesson);
+        this.lesson = ResponseOneProfiles.toLessonDto(lesson);
     }
 
     public ResponseProfiles(ExceptionCode exceptionCode, Project project) {
         super(exceptionCode);
-        toProjectDto(project);
+        this.project = ResponseOneProfiles.toProjectDto(project);
     }
 
     public ResponseProfiles(ExceptionCode exceptionCode, Outsourcing outsourcing) {
         super(exceptionCode);
-        toOutsourcingDto(outsourcing);
+        this.outsourcing = ResponseOneProfiles.toOutsourcingDto(outsourcing);
     }
 
-    public void toProjectDto(Project project) {
-        if (project == null) {
-            this.project = null;
-        }
-        else {
-            this.project = ProjectDto.builder()
-                    .part(project.getPart())
-                    .projectSelf(project.getProjectSelf())
-                    .open(project.isOpen())
-                    .build();
-        }
-    }
 
-    public void toLessonDto(Lesson lesson) {
-        if (lesson == null) {
-            this.lesson = null;
-        }
-        else {
-            this.lesson = LessonDto.builder()
-                    .subject(lesson.getSubject())
-                    .lessonSelf(lesson.getLessonSelf())
-                    .open(lesson.isOpen())
-                    .build();
-        }
-    }
-
-    public void toOutsourcingDto(Outsourcing outsourcing) {
-        if (outsourcing == null) {
-            this.outsourcing = null;
-        }
-        else {
-            this.outsourcing = OutsourcingDto.builder()
-                    .career(outsourcing.getCareer())
-                    .outsourcingSelf(outsourcing.getOutsourcingSelf())
-                    .open(outsourcing.isOpen())
-                    .build();
-        }
-    }
 }

@@ -40,6 +40,10 @@ public class Lesson extends BaseEntity {
         super.delete();
     }
 
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
 
     @Builder
     public Lesson(String subject, String lessonSelf, boolean open, Profile profile) {

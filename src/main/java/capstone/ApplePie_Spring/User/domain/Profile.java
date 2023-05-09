@@ -3,6 +3,7 @@ package capstone.ApplePie_Spring.User.domain;
 import capstone.ApplePie_Spring.Profiles.domain.Lesson;
 import capstone.ApplePie_Spring.Profiles.domain.Outsourcing;
 import capstone.ApplePie_Spring.Profiles.domain.Project;
+import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.User.dto.ProfileDto;
 import capstone.ApplePie_Spring.User.dto.SignupDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
@@ -11,6 +12,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,14 +28,38 @@ public class Profile extends BaseEntity {
     private String area;
     private String college;
     private String grader;
+    private float totalGrade;
     private float grade;
     private String github;
 
     @Column(name = "dev_framework")
     private String devFramework;
 
+    public enum Language {
+        L0(0, "C"),
+        L1(1,"C++"),
+        L2(2,"C#"),
+        L3(3,"PYTHON"),
+        L4(4,"KOTLIN"),
+        L5(5,"SWIFT"),
+        L6(6,"DART"),
+        L7(7,"HTML");
+
+        private int id;
+        private String name;
+
+        Language(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public String getLanguageName() {
+            return name;
+        }
+    }
+
     @Column(name = "dev_language")
-    private String devLanguage;
+    private List<Language> devLanguage;
 
     // 연관 관계 매핑
     @OneToOne // (fetch = FetchType.LAZY)는 일대일 매핑에서 오류
@@ -67,6 +95,7 @@ public class Profile extends BaseEntity {
     public void update(ProfileDto profileDto) {
         this.area = profileDto.getArea();
         this.college = profileDto.getCollege();
+        this.totalGrade = profileDto.getTotalGrade();
         this.grade = profileDto.getGrade();
         this.grader = profileDto.getGrader();
         this.github = profileDto.getGithub();

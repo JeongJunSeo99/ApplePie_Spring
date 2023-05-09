@@ -39,6 +39,10 @@ public class Project extends BaseEntity {
         super.delete();
     }
 
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
     @Builder
     public Project(String part, String projectSelf, boolean open, Profile profile) {
         this.part = part;

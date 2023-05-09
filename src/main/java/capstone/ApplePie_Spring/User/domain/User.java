@@ -39,7 +39,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     private char gender;
-    //private int age;
+    private int age;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;

@@ -39,6 +39,10 @@ public class Outsourcing extends BaseEntity {
         super.delete();
     }
 
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
     @Builder
     public Outsourcing(String career, String outsourcingSelf, boolean open, Profile profile) {
         this.career = career;

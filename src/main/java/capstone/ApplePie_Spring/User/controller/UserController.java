@@ -1,5 +1,6 @@
 package capstone.ApplePie_Spring.User.controller;
 
+import capstone.ApplePie_Spring.Profiles.service.ProfilesService;
 import capstone.ApplePie_Spring.User.dto.LoginDto;
 import capstone.ApplePie_Spring.User.dto.ProfileDto;
 import capstone.ApplePie_Spring.User.dto.SignupDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ProfilesService profilesService;
 
     @GetMapping
     public String test() {
@@ -52,4 +54,9 @@ public class UserController {
         return new ResponseEntity<>(userService.updateProfile(id, profileDto), HttpStatus.OK);
     }
 
+    // 개인 프로필 전체 조회 - 4개
+    @GetMapping("profiles/{pid}")
+    public ResponseEntity<Object> findUserProfiles(@PathVariable Long pid) {
+        return new ResponseEntity<>(profilesService.findUserProfiles(pid), HttpStatus.OK);
+    }
 }

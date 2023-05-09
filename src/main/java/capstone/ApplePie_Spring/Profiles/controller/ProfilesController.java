@@ -63,4 +63,21 @@ public class ProfilesController {
     public ResponseEntity<Object> updateOutsourcing(@PathVariable Long pid, @RequestBody OutsourcingDto outsourcingDto) {
         return new ResponseEntity<>(profilesService.updateOutsourcing(pid, outsourcingDto), HttpStatus.OK);
     }
+
+    // open 상태 변경
+
+    @PutMapping("/lesson/open/{pid}")
+    public ResponseEntity<Object> updateOpenLesson(@PathVariable Long pid, @RequestBody boolean open) {
+        return new ResponseEntity<>(profilesService.updateOpenLesson(pid, open), HttpStatus.OK);
+    }
+
+    @PutMapping("/outsourcing/open/{pid}")
+    public ResponseEntity<Object> saveOpenOutsourcing(@PathVariable Long pid, @RequestBody boolean open) {
+        return new ResponseEntity<>(profilesService.updateOpenOutsourcing(pid, open), HttpStatus.OK);
+    }
+
+    @PutMapping("/project/open/{pid}")
+    public ResponseEntity<Object> updateOpenProject(@PathVariable Long pid, boolean open) {
+        return new ResponseEntity<>(profilesService.updateOpenProject(pid, open), HttpStatus.OK);
+    }
 }

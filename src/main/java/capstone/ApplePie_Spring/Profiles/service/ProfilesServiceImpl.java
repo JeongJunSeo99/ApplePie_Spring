@@ -11,6 +11,7 @@ import capstone.ApplePie_Spring.Profiles.repository.LessonRepository;
 import capstone.ApplePie_Spring.Profiles.repository.OutsourcingRepository;
 import capstone.ApplePie_Spring.Profiles.repository.ProjectRepository;
 import capstone.ApplePie_Spring.Profiles.response.ResponseNoProfiles;
+import capstone.ApplePie_Spring.Profiles.response.ResponseOneProfiles;
 import capstone.ApplePie_Spring.Profiles.response.ResponseProfiles;
 import capstone.ApplePie_Spring.Profiles.response.ResponseProfilesList;
 import capstone.ApplePie_Spring.User.domain.Profile;
@@ -41,10 +42,7 @@ public class ProfilesServiceImpl implements ProfilesService {
 
     private Profile validateProfile(Long profileId) {
         Optional<Profile> findProfile = profileRepository.findByIdAndStatus(profileId, STATUS);
-        if (findProfile.isPresent()) {
-            return findProfile.get();
-        }
-        return null;
+        return findProfile.orElse(null);
     }
 
     @Override
@@ -104,9 +102,9 @@ public class ProfilesServiceImpl implements ProfilesService {
             project = findProject.get();
         }
         if (findOutsourcing.isPresent()) {
-            project = findProject.get();
+            outsourcing = findOutsourcing.get();
         }
-        return new ResponseProfiles(ExceptionCode.PROFILES_FIND_OK, lesson, project, outsourcing);
+        return new ResponseOneProfiles(ExceptionCode.PROFILES_FIND_OK, lesson, project, outsourcing);
     }
 
     @Override
@@ -137,9 +135,28 @@ public class ProfilesServiceImpl implements ProfilesService {
             Lesson lesson = findLesson.get();
             lesson.update(lessonDto);
             return new ResponseProfiles(ExceptionCode.PROFILES_CREATED_OK, lesson);
-        } else {
-            return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
         }
+        return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
+    }
+
+    @Override
+    public Object updateOpenLesson(Long pid, boolean open) {
+        Profile profile = validateProfile(pid);
+        Optional<Lesson> findLesson = lessonRepository.findByProfileIdAndStatus(pid, STATUS);
+        if (profile == null) {
+            return new ResponseNoProfiles(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        else if (findLesson.isEmpty()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_CREATED_ERROR);
+        }
+
+        Lesson lesson = findLesson.get();
+        lesson.setOpen(open);
+        if (lesson.isOpen()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_OPEN_OK);
+        }
+        return new ResponseNoProfiles(ExceptionCode.PROFILES_CLOSE__OK);
+
     }
 
     @Override
@@ -176,6 +193,25 @@ public class ProfilesServiceImpl implements ProfilesService {
     }
 
     @Override
+    public Object updateOpenProject(Long pid, boolean open) {
+        Profile profile = validateProfile(pid);
+        Optional<Project> findProject = projectRepository.findByProfileIdAndStatus(pid, STATUS);
+        if (profile == null) {
+            return new ResponseNoProfiles(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        else if (findProject.isEmpty()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_CREATED_ERROR);
+        }
+
+        Project project = findProject.get();
+        project.setOpen(open);
+        if (project.isOpen()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_OPEN_OK);
+        }
+        return new ResponseNoProfiles(ExceptionCode.PROFILES_CLOSE__OK);
+    }
+
+    @Override
     public Object saveOutsourcing(Long profileId, OutsourcingDto outsourcingDto) {
         Profile profile = validateProfile(profileId);
         Optional<Outsourcing> findOutsourcing = outsourcingRepository.findByProfileIdAndStatus(profileId, STATUS);
@@ -206,5 +242,24 @@ public class ProfilesServiceImpl implements ProfilesService {
         } else {
             return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
         }
+    }
+
+    @Override
+    public Object updateOpenOutsourcing(Long pid, boolean open) {
+        Profile profile = validateProfile(pid);
+        Optional<Outsourcing> findOutsourcing = outsourcingRepository.findByProfileIdAndStatus(pid, STATUS);
+        if (profile == null) {
+            return new ResponseNoProfiles(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        else if (findOutsourcing.isEmpty()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_CREATED_ERROR);
+        }
+
+        Outsourcing outsourcing = findOutsourcing.get();
+        outsourcing.setOpen(open);
+        if (outsourcing.isOpen()) {
+            return new ResponseNoProfiles(ExceptionCode.PROFILES_OPEN_OK);
+        }
+        return new ResponseNoProfiles(ExceptionCode.PROFILES_CLOSE__OK);
     }
 }

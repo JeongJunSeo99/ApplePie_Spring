@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,36 +20,38 @@ public class SignupDto {
     private boolean corp;
 
     private char gender;
-    //private int age;
+    private int age;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;
 
     private String area;
     private String college;
     private String grader;
+    private float totalGrade;
     private float grade;
     private String github;
     private String devFramework;
-    private String devLanguage;
+    private List<Profile.Language> devLanguage;
 
     @Builder
     public SignupDto(String email, String name, String nickname, String password,
-                     boolean corp, char gender, LocalDate birth, //int age,
+                     boolean corp, char gender, LocalDate birth, float totalGrade, //int age,
                      String college, float grade, String area, String grader, String github,
-                     String devFramework, String devLanguage) {
+                     String devFramework, List<Profile.Language> devLanguage) {
 
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.gender = gender;
-        //this.age = age;
+        this.age = LocalDate.now().getDayOfYear() - birth.getDayOfYear() + 1;
         this.birth = birth;
         this.corp = corp;
 
         this.area = area;
         this.college = college;
         this.grade = grade;
+        this.totalGrade = totalGrade;
         this.grader = grader;
         this.github = github;
         this.devFramework = devFramework;
