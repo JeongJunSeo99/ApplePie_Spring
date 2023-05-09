@@ -28,9 +28,9 @@ public class BoardController {
     }
 
     // 단일 글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getBoardOne(@PathVariable long id) {
-        return new ResponseEntity<>(boardService.findOne(id), HttpStatus.OK);
+    @GetMapping("/{bid}")
+    public ResponseEntity<Object> getBoardOne(@PathVariable long bid) {
+        return new ResponseEntity<>(boardService.findOne(bid), HttpStatus.OK);
     }
 
 
@@ -41,16 +41,15 @@ public class BoardController {
     }
 
     // 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> getBoardOne(@PathVariable long id,
-                                              @RequestPart(value = "board") BoardUpdateDto boardUpdateDto,
-                                              @RequestPart(value = "file", required = false) List<MultipartFile> files) throws Exception {
-        return new ResponseEntity<>(boardService.update(id, boardUpdateDto, files), HttpStatus.OK);
+    @PutMapping("/{bid}")
+    public ResponseEntity<Object> getBoardOne(@PathVariable long bid,
+                                              @RequestPart(value = "board") BoardUpdateDto boardUpdateDto,@RequestPart(value = "file", required = false) List<MultipartFile> files) throws Exception {
+        return new ResponseEntity<>(boardService.update(bid, boardUpdateDto, files), HttpStatus.OK);
     }
 
     // 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable long id, @RequestBody String email) {
-        return new ResponseEntity<>(boardService.delete(id, email), HttpStatus.OK);
+    @DeleteMapping("/{bid}")
+    public ResponseEntity<Object> delete(@PathVariable long bid) {
+        return new ResponseEntity<>(boardService.delete(bid), HttpStatus.OK);
     }
 }

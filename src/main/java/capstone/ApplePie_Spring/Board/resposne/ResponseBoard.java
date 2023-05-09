@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class ResponseBoard extends ResponseNoBoard {
 
-    private Object data;
+    private Object board;
 
     public ResponseBoard(ExceptionCode exceptionCode, FindOneBoardDto findOneBoardDto) {
         super(exceptionCode);
-        this.data = findOneBoardDto;
+        this.board = findOneBoardDto;
     }
 }

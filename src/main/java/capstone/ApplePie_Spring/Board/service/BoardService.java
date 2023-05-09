@@ -12,5 +12,5 @@ public interface BoardService {
     Object findOne(long boardId);
     Object BoardPagesBy(BoardFindDto boardFindDto);
     Object update(Long id, BoardUpdateDto boardUpdateDto, List<MultipartFile> files) throws Exception;
-    Object delete(Long id, String email);
+    Object delete(Long id);
 }

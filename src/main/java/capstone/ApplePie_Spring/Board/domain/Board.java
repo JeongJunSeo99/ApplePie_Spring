@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +35,9 @@ public class Board extends BaseEntity {
 
     private int view_count;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate deadline;
+
     // 연관 관계 매핑
 
     @JsonIgnore
@@ -40,7 +45,7 @@ public class Board extends BaseEntity {
     private User user;
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(mappedBy = "board")
     private Team team;
 
     public enum Category {
@@ -74,7 +79,8 @@ public class Board extends BaseEntity {
         this.title = boardSaveDto.getTitle();
         this.content = boardSaveDto.getContent();
         this.view_count = 0;
-        this.category = Category.getValue(boardSaveDto.getCategory());
+        this.category = boardSaveDto.getCategory();
+        this.deadline = boardSaveDto.getDeadline();
 
         this.user = user;
     }
@@ -95,10 +101,15 @@ public class Board extends BaseEntity {
         this.files = files;
     }
 
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
     public void update(BoardUpdateDto boardUpdateDto) {
         this.title = boardUpdateDto.getTitle();
         this.content = boardUpdateDto.getContent();
         this.category = Category.getValue(boardUpdateDto.getCategory());
+        this.deadline = boardUpdateDto.getDeadline();
 
         for (File file : files) {
             file.delete();

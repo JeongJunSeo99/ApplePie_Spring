@@ -1,11 +1,10 @@
 package capstone.ApplePie_Spring.Board.dto;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
-import capstone.ApplePie_Spring.Board.domain.File;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -18,6 +17,7 @@ public class FindOneBoardDto {
     private String content;
     private int view_count;
     private Board.Category category;
+    private LocalDate deadline;
     private List<String> files;
 
     @Builder
@@ -28,6 +28,7 @@ public class FindOneBoardDto {
         this.content = board.getContent();
         this.view_count = board.getView_count();
         this.category = board.getCategory();
+        this.deadline = board.getDeadline();
         files = urlList;
     }
 }

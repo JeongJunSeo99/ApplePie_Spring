@@ -5,8 +5,12 @@ import capstone.ApplePie_Spring.Board.domain.File;
 import capstone.ApplePie_Spring.Board.dto.*;
 import capstone.ApplePie_Spring.Board.repository.BoardRepository;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoard;
+import capstone.ApplePie_Spring.Board.resposne.ResponseBoardAndTeam;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoardList;
 import capstone.ApplePie_Spring.Board.resposne.ResponseNoBoard;
+import capstone.ApplePie_Spring.Team.domain.Team;
+import capstone.ApplePie_Spring.Team.dto.FindTeamDto;
+import capstone.ApplePie_Spring.Team.repository.TeamRepository;
 import capstone.ApplePie_Spring.User.domain.User;
 import capstone.ApplePie_Spring.User.repository.UserRepository;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
@@ -28,6 +32,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final TeamRepository teamRepository;
     private final FileService fileService;
 
     private static final Integer STATUS = 1;
@@ -35,7 +40,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Object save(BoardSaveDto boardSaveDto, List<MultipartFile> files) throws Exception {
 
-        Optional<User> findUser = userRepository.findByEmailAndStatus(boardSaveDto.getEmail(), STATUS);
+        Optional<User> findUser = userRepository.findByIdAndStatus(boardSaveDto.getUserId(), STATUS);
         if (findUser.isEmpty()) {
             return new ResponseNoBoard(ExceptionCode.USER_FIND_NOT);
         }
@@ -79,7 +84,6 @@ public class BoardServiceImpl implements BoardService {
         board.addViewCount();
         board.setFiles(fileService.findByBoardId(boardId));
 
-
         List<String> urls = board.getFiles().stream()
                 .map(File::getUrl)
                 .collect(Collectors.toList());
@@ -88,7 +92,16 @@ public class BoardServiceImpl implements BoardService {
                 .board(findBoard.get())
                 .urlList(urls)
                 .build();
-        return new ResponseBoard(ExceptionCode.BOARD_FIND_OK, findOneBoardDto);
+
+        Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(board.getId(), STATUS);
+        FindTeamDto teamDto = null;
+        if (findTeam.isPresent()) {
+            teamDto = FindTeamDto.builder()
+                    .team(findTeam.get())
+                    .build();
+        }
+
+        return new ResponseBoardAndTeam(ExceptionCode.BOARD_FIND_OK, findOneBoardDto, teamDto);
     }
 
     @Override
@@ -114,8 +127,13 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board board = findBoard.get();
-        User user = userRepository.findByEmailAndStatus(boardUpdateDto.getEmail(), STATUS).get();
-        if (!user.getEmail().equals(boardUpdateDto.getEmail())) {
+        Optional<User> findUser = userRepository.findByIdAndStatus(boardUpdateDto.getUserId(), STATUS);
+        if (findUser.isEmpty()) {
+            return new ResponseNoBoard(ExceptionCode.USER_FIND_NOT);
+        }
+
+        User user = findUser.get();
+        if (!user.getId().equals(boardUpdateDto.getUserId())) {
             return new ResponseNoBoard(ExceptionCode.WRONG_APPROACH);
         }
 
@@ -123,7 +141,7 @@ public class BoardServiceImpl implements BoardService {
         board.setFiles(addFiles(board, files));
 
         List<String> urls = board.getFiles().stream()
-                .map(file -> file.getUrl())
+                .map(File::getUrl)
                 .collect(Collectors.toList());
 
         FindOneBoardDto findOneBoardDto = FindOneBoardDto.builder()
@@ -134,14 +152,20 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Object delete(Long id, String email) {
+    public Object delete(Long id) {
         Optional<Board> findBoard = boardRepository.findByIdAndStatus(id, STATUS);
         if (findBoard.isEmpty()) {
             return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
         }
         Board board = findBoard.get();
         board.delete();
+
         return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_OK);
+        /*if (board.getUser().getId().equals(userId)) {
+            board.delete();
+            return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_OK);
+        }
+        return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_NOT);*/
     }
 
     private List<Board> fetchPages(BoardFindDto boardFindDto)  {
