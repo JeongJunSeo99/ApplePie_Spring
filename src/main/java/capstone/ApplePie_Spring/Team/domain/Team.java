@@ -31,8 +31,12 @@ public class Team extends BaseEntity {
     @Column(name = "team_content", nullable = false)
     private String teamContent;
 
+    @Column(name = "total_count", nullable = false)
+    private List<Integer> totalCount;
+
     @Column(name = "count", nullable = false)
     private List<Integer> count;
+
 
     public enum TeamStatus {
         CANCEL(0, "모집 종료"),
@@ -81,7 +85,8 @@ public class Team extends BaseEntity {
         this.user = user;
         this.teamName = teamDto.getTeamName();
         this.teamContent = teamDto.getTeamContent();
-        this.count = teamDto.getCount();
+        this.totalCount = teamDto.getCount();
+        setInitCount();
         this.teamStatus = TeamStatus.CREATE;
         this.board = board;
     }
@@ -92,15 +97,33 @@ public class Team extends BaseEntity {
         this.count = count;
     }
 
+    public void setTotalCount(List<Integer> totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public void setCount(List<Member> members) {
+        List<Integer> cnt = Arrays.asList(0, 0, 0, 0, 0);
+        for(Member member : members) {
+            int i = member.getVolunteer().getRole().ordinal();
+            cnt.set(i, cnt.get(i)+1);
+        }
+        this.count = cnt;
+    }
+
+    public void setInitCount() {
+        Integer[] cnt = {0,0,0,0,0};
+        this.count = Arrays.asList(cnt);
+    }
+
     public void addMember(Member member) {
         members.add(member);
         int index = member.getVolunteer().getRole().ordinal();
-        count.set(index, count.get(index) - 1);
+        this.count.set(index, this.count.get(index) + 1);
     }
 
     public void removeMember(Member member) {
         int index = member.getVolunteer().getRole().ordinal();
-        count.set(index, count.get(index) + 1);
+        count.set(index, count.get(index) - 1);
         members.remove(member);
     }
 

@@ -7,5 +7,5 @@ import capstone.ApplePie_Spring.Team.dto.VolunteerDto;
 public interface VolunteerService {
     Object save(VolunteerDto volunteerDto);
     Object cancel(CancelVolunteerDto cancelVolunteerDto);
-    Object getVolunteers(FindVolunteerDto findVolunteerDto);
+    Object getVolunteers(Long uid, FindVolunteerDto findVolunteerDto);
 }

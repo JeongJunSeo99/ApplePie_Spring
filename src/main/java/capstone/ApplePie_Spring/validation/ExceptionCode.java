@@ -28,7 +28,7 @@ public enum ExceptionCode {
     PROFILES_FIND_NOT(NOT_FOUND_VALUE, "D002", "세부 PROFILES 없음"),
     PROFILES_FIND_OK(SUCCESS, "D003", "세부 PROFILE 조회 성공"),
     PROFILES_OPEN_OK(SUCCESS, "D004", "세부 PROFILE 공개"),
-    PROFILES_CLOSE__OK(SUCCESS, "D004", "세부 PROFILE 비공개"),
+    PROFILES_CLOSE_OK(SUCCESS, "D005", "세부 PROFILE 비공개"),
 
     BOARD_CREATED_OK(SUCCESS, "H00", "BOARD 생성"),
     BOARD_FIND_NOT(NOT_FOUND_VALUE, "H001", "BOARD 찾을 수 없음"),
@@ -53,7 +53,7 @@ public enum ExceptionCode {
     VOLUNTEER_CREATED_ERROR(DUPLICATED_VALUE, "K002", "이미 지원한 TEAM"),
     VOLUNTEER_CANCEL_NOT(INVALID_ACCESS, "K003", "지원 취소 불가(팀원)"),
     VOLUNTEER_FIND_NOT(NOT_FOUND_VALUE, "K004", "지원자 조회 실패"),
-    VOLUNTEER_FIND_OK(NOT_FOUND_VALUE, "K005", "지원자 조회 성공"),
+    VOLUNTEER_FIND_OK(SUCCESS, "K005", "지원자 조회 성공"),
 
     MEMBER_OK(SUCCESS, "I000", "팀원으로 처리 성공"),
     MEMBER_FIND_OK(SUCCESS, "I001", "팀원 조회 성공"),

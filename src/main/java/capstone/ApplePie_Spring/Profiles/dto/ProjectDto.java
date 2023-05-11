@@ -10,22 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProjectDto {
+    private String introduce;
     private String part;
     private String projectSelf;
     private boolean open;
 
     @Builder
-    public ProjectDto(String part, String projectSelf, boolean open) {
+    public ProjectDto(String introduce, String part, String projectSelf, boolean open) {
         this.part = part;
         this.projectSelf = projectSelf;
         this.open = open;
-    }
-
-    public Project toProject() {
-        return Project.builder()
-                .part(part)
-                .projectSelf(projectSelf)
-                .open(open)
-                .build();
+        this.introduce = introduce;
     }
 }

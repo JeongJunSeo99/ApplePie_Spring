@@ -103,16 +103,19 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public Object getVolunteers(FindVolunteerDto findVolunteerDto) {
-        Optional<Team> findTeam = teamRepository.findByIdAndStatus(findVolunteerDto.getUserId(), STATUS);
+    public Object getVolunteers(Long uid, FindVolunteerDto findVolunteerDto) {
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(findVolunteerDto.getTeamId(), STATUS);
         if (findTeam.isEmpty()) {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
-        if (findTeam.get().getUser().getId().equals(findVolunteerDto.getUserId())) {
+
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty() || ! findTeam.get().getUser().getId().equals(uid)) {
             return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
         }
 
         List<Volunteer> findVolunteer = volunteerRepository.findAllByTeamIdAndStatus(findVolunteerDto.getTeamId(), STATUS);
-        return new ResponseVolunteerList(ExceptionCode.VOLUNTEER_FIND_OK, findVolunteer);
+        return new ResponseVolunteerList(ExceptionCode.VOLUNTEER_FIND_OK, findVolunteer,
+                findTeam.get().getCount(), findTeam.get().getTotalCount());
     }
 }

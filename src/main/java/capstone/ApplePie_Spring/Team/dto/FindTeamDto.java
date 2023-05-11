@@ -11,11 +11,13 @@ public class FindTeamDto {
     private String teamName;
     private String teamContent;
     private List<Integer> memberCount;
+    private List<Integer> totalCount;
 
     @Builder
     public FindTeamDto(Team team) {
         this.teamName = team.getTeamName();
         this.teamContent = team.getTeamContent();
         this.memberCount = team.getCount();
+        this.totalCount = team.getTotalCount();
     }
 }

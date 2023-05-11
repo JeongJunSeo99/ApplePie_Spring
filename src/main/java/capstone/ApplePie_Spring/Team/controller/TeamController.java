@@ -20,27 +20,21 @@ public class TeamController {
     private final MemberService memberService;
 
     // 팀 생성
-    @PostMapping
-    public ResponseEntity<Object> createTeam(@RequestBody TeamDto teamDto){
-        return new ResponseEntity<>(teamService.save(teamDto), HttpStatus.OK);
+    @PostMapping("/{uid}")
+    public ResponseEntity<Object> createTeam(@PathVariable Long uid, @RequestBody TeamDto teamDto){
+        return new ResponseEntity<>(teamService.save(uid, teamDto), HttpStatus.OK);
     }
 
     // 팀 수정
-    @PutMapping
-    public ResponseEntity<Object> updateTeam(@RequestBody TeamDto teamDto){
-        return new ResponseEntity<>(teamService.update(teamDto), HttpStatus.OK);
+    @PutMapping("/{uid}")
+    public ResponseEntity<Object> updateTeam(@PathVariable Long uid, @RequestBody TeamDto teamDto){
+        return new ResponseEntity<>(teamService.update(uid, teamDto), HttpStatus.OK);
     }
 
-/*    // 팀 모집 완료
-    @PutMapping
-    public ResponseEntity<Object> completeTeam(@RequestBody TeamUpdateDto teamUpdateDto) {
-        return new ResponseEntity<>(teamService.complete(teamUpdateDto), HttpStatus.OK);
-    }*/
-
     // 팀 모집 취소
-    @DeleteMapping
-    public ResponseEntity<Object> cancelTeam(@RequestBody TeamUpdateDto teamUpdateDto) {
-        return new ResponseEntity<>(teamService.cancel(teamUpdateDto), HttpStatus.OK);
+    @DeleteMapping("/{uid}")
+    public ResponseEntity<Object> cancelTeam(@PathVariable Long uid, @RequestBody TeamUpdateDto teamUpdateDto) {
+        return new ResponseEntity<>(teamService.cancel(uid, teamUpdateDto), HttpStatus.OK);
     }
 
     // 팀에 지원
@@ -55,24 +49,28 @@ public class TeamController {
         return new ResponseEntity<>(volunteerService.cancel(volunteerDto), HttpStatus.OK);
     }
 
-    // 팀원 처리
+    // 관련된 모든 팀 uid -> teamId
+    @GetMapping("/{uid}")
+    public ResponseEntity<Object> getMyTeam(@PathVariable Long uid) {
+        return new ResponseEntity<>(teamService.findTeam(uid), HttpStatus.OK);
+    }
+
+    // 지원자 리스트 조회
+    @GetMapping("/volunteer/{uid}")
+    public ResponseEntity<Object> findVolunteers(@PathVariable Long uid, @RequestBody FindVolunteerDto volunteerDto) {
+        return new ResponseEntity<>(volunteerService.getVolunteers(uid, volunteerDto), HttpStatus.OK);
+    }
+
+    // 팀원 처리 /
     @PostMapping("/member")
     public ResponseEntity<Object> updateVolunteerToMember(@RequestBody MemberDto memberDto) {
         return new ResponseEntity<>(memberService.save(memberDto), HttpStatus.OK);
     }
 
-    // 팀원 취소
-
-    // 관련된 모든 팀 -> teamId
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getMyTeam(@PathVariable Long id) {
-        return new ResponseEntity<>(teamService.findTeam(id), HttpStatus.OK);
-    }
-
-    // 자기가 생성한 팀이면, 지원자 리스트 조회 -> volunteerId
-    @GetMapping("/volunteer")
-    public ResponseEntity<Object> findVolunteers(@RequestBody FindVolunteerDto volunteerDto) {
-        return new ResponseEntity<>(volunteerService.getVolunteers(volunteerDto), HttpStatus.OK);
+    // 팀의 팀원들 조회
+    @GetMapping("/member")
+    public ResponseEntity<Object> getMember(@RequestBody FindMemberDto findMemberDto) {
+        return new ResponseEntity<>(memberService.getMembers(findMemberDto), HttpStatus.OK);
     }
 
 }

@@ -9,10 +9,12 @@ import java.util.List;
 @Getter
 public class ResponseMember extends ResponseType {
 
+    private List<Integer> totalCount;
     private List<Integer> count;
 
-    public ResponseMember(ExceptionCode exceptionCode, List<Integer> count) {
+    public ResponseMember(ExceptionCode exceptionCode, List<Integer> count, List<Integer> totalCount) {
         super(exceptionCode);
         this.count = count;
+        this.totalCount = totalCount;
     }
 }

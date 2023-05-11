@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member save(Member member);
-    List<Member> findByTeamIdAndStatus(Long teamId, int status);
+    List<Member> findAllByTeamIdAndStatus(Long teamId, int status);
 }

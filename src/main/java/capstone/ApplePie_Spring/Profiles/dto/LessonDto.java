@@ -10,22 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LessonDto {
+    private String introduce;
     private String subject;
     private String lessonSelf;
     private boolean open;
 
     @Builder
-    public LessonDto(String subject, String lessonSelf, boolean open) {
+    public LessonDto(String subject, String lessonSelf, String introduce, boolean open) {
         this.subject = subject;
         this.lessonSelf = lessonSelf;
         this.open = open;
-    }
-
-    public Lesson toLesson() {
-        return Lesson.builder()
-                .subject(subject)
-                .lessonSelf(lessonSelf)
-                .open(open)
-                .build();
+        this.introduce = introduce;
     }
 }

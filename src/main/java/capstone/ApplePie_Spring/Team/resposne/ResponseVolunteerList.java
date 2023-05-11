@@ -10,9 +10,14 @@ import java.util.List;
 @Getter
 public class ResponseVolunteerList extends ResponseType {
 
+    private List<Integer> totalCount;
+    private List<Integer> count;
     private List<Volunteer> volunteerList;
-    public ResponseVolunteerList(ExceptionCode exceptionCode, List<Volunteer> volunteers) {
+    public ResponseVolunteerList(ExceptionCode exceptionCode, List<Volunteer> volunteers,
+                                 List<Integer> count, List<Integer> totalCount) {
         super(exceptionCode);
         this.volunteerList = volunteers;
+        this.count = count;
+        this.totalCount = totalCount;
     }
 }

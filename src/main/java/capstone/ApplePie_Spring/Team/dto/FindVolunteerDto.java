@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class FindVolunteerDto {
-    private Long userId;
     private Long teamId;
 }

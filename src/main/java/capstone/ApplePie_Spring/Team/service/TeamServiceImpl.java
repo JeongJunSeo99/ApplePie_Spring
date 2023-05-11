@@ -41,7 +41,8 @@ public class TeamServiceImpl implements TeamService {
     private final VolunteerRepository volunteerRepository;
     private final TeamVolunteerRepository teamVolunteerRepository;
 
-    public Object save(TeamDto teamDto) {
+    @Override
+    public Object save(Long uid, TeamDto teamDto) {
         Optional<Board> findBoard = boardRepository.findByIdAndStatus(teamDto.getBoardId(), STATUS);
         Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(teamDto.getBoardId(), STATUS);
         if (findBoard.isEmpty()) {
@@ -51,11 +52,17 @@ public class TeamServiceImpl implements TeamService {
             return new ResponseTeam(ExceptionCode.TEAM_CREATED_ERROR);
         }
 
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty() || ! findUser.get().getId().equals(uid)) {
+            return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
+        }
+
         Board board = findBoard.get();
         String email = findBoard.get().getUser().getEmail();
         User user = userRepository.findByEmailAndStatus(email, STATUS).get();
 
         // team
+        teamDto.addLeaderCount();  // 팀장 역할 반영
         Team team = Team.builder()
                 .board(board)
                 .teamDto(teamDto)
@@ -91,22 +98,24 @@ public class TeamServiceImpl implements TeamService {
                 .build();
         teamVolunteerRepository.save(teamVolunteer);
 
-        return new ResponseTeam(ExceptionCode.TEAM_CREATED_OK);
+        return new ResponseTeam(ExceptionCode.TEAM_CREATED_OK, team);
     }
 
     @Override
     public Object complete(TeamUpdateDto teamUpdateDto) {
         // 모든 인원 초과
-        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
-        if (team == null) {
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(teamUpdateDto.getTeamId(), STATUS);
+        if (findTeam.isEmpty()) {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
+
+        Team team = findTeam.get();
         team.setTeamStatus(Team.TeamStatus.COMPLETE);
         return new ResponseTeam(ExceptionCode.TEAM_COMPLETE);
     }
 
     @Override
-    public Object update(TeamDto teamDto) {
+    public Object update(Long uid, TeamDto teamDto) {
         Optional<Board> findBoard = boardRepository.findByIdAndStatus(teamDto.getBoardId(), STATUS);
         Optional<Team> findTeam = teamRepository.findByBoardIdAndStatus(teamDto.getBoardId(), STATUS);
         if (findBoard.isEmpty()) {
@@ -116,42 +125,46 @@ public class TeamServiceImpl implements TeamService {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
 
-        String email = findBoard.get().getUser().getEmail();
-        User user = userRepository.findByEmailAndStatus(email, STATUS).get();
-
-        // team count 처리
-        List<Integer> count = teamDto.getCount();
-        for (Volunteer volunteer : findTeam.get().getVolunteers()) {
-            if (volunteer.getVolunteerStatus().equals(Volunteer.VolunteerStatus.COMPLETE)) {
-                int i = volunteer.getRole().ordinal();
-                count.set(i, count.get(i)-1);
-            }
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty() || ! findUser.get().getId().equals(uid)) {
+            return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
         }
-        findTeam.get().updateTeam(teamDto, count);
 
-        Optional<Volunteer> findVolunteer = volunteerRepository
-                .findByUserIdAndTeamIdAndStatus(user.getId(), findTeam.get().getId(), STATUS);
-        if (findVolunteer.isPresent()) {
-            findVolunteer.get().updateVolunteer(teamDto);
-        }
+        Team team = findTeam.get();
+
+        // totalCount 설정
+        teamDto.addLeaderCount(); // 팀장 역할 반영
+        team.setTotalCount(teamDto.getCount());
+
+        // count 재설정
+        List<Member> findMember = memberRepository.findAllByTeamIdAndStatus(team.getId(), STATUS);
+        team.setCount(findMember);
 
         // 모든 인원수가 이상인 경우에 complete 처리
-        for (int n : findTeam.get().getCount()) {
-            if (n > 0) {
+        List<Integer> total = findTeam.get().getTotalCount();
+        List<Integer> cnt = findTeam.get().getCount();
+        for (int n=0; n < 5; n++) {
+            if (total.get(n) <= cnt.get(n)) {
+                team.setTeamStatus(Team.TeamStatus.COMPLETE);
                 return new ResponseTeam(ExceptionCode.TEAM_UPDATE_OK);
             }
         }
-        findTeam.get().setTeamStatus(Team.TeamStatus.COMPLETE);
         return new ResponseTeam(ExceptionCode.TEAM_UPDATE_OK);
     }
 
     @Override
-    public Object delete(TeamUpdateDto teamUpdateDto) {
-        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
-        if (team == null) {
+    public Object delete(Long uid, TeamUpdateDto teamUpdateDto) {
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty() || ! findUser.get().getId().equals(uid)) {
+            return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
+        }
+
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(teamUpdateDto.getTeamId(), STATUS);
+        if (findTeam.isEmpty()) {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
-        team.delete();
+
+        findTeam.get().delete();
         return new ResponseTeam(ExceptionCode.TEAM_COMPLETE);
     }
 
@@ -165,14 +178,20 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override  // 지원한 팀 경우 -> 지원 취소 & 자기 팀인 경우 -> 팀 취소(team_status = 0처리)
-    public Object cancel(TeamUpdateDto teamUpdateDto) { // 모집 취소(중지)
-        Team team = validation(teamUpdateDto.getTeamId(), STATUS);
-        if (team == null) {
+    public Object cancel(Long uid, TeamUpdateDto teamUpdateDto) { // 모집 취소(중지)
+        Optional<Team> findTeam = teamRepository.findByIdAndStatus(teamUpdateDto.getTeamId(), STATUS);
+        if (findTeam.isEmpty()) {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
+        }
+        Team team = findTeam.get();
+
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty() || ! findUser.get().getId().equals(uid)) {
+            return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
         }
 
         // 본인 팀인 경우
-        if (team.getUser().getId().equals(teamUpdateDto.getUserId())) {
+        if (team.getUser().getId().equals(uid)) {
             team.setTeamStatus(Team.TeamStatus.CANCEL);
             team.delete();
             return new ResponseTeam(ExceptionCode.TEAM_DELETE_OK);
@@ -192,10 +211,6 @@ public class TeamServiceImpl implements TeamService {
         }*/
     }
 
-    public Team validation(Long teamId, int state) {
-        Optional<Team> findTeam = teamRepository.findByIdAndStatus(teamId, state);
-        return findTeam.orElse(null);
-    }
 
     public List<Team> findUserTeam(Long userId) { // 내가 모집중인 팀 + 지원한 팀(멤버여도 팀이 완성되지 않은 경우)
         return teamRepository.findAllByUserIdAndTeamStatusAndStatus(userId, Team.TeamStatus.CREATE, STATUS);
