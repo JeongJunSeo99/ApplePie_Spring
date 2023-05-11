@@ -5,10 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class ResponseLogin extends ResponseUser {
-    private Long id;
+    private Long uid;
+    private Long pid;
+    private boolean corp;
 
-    public ResponseLogin(ExceptionCode exceptionCode, Long id) {
+    public ResponseLogin(ExceptionCode exceptionCode, Long uid, Long pid, boolean corp) {
         super(exceptionCode);
-        this.id = id;
+        this.uid = uid;
+        this.pid = pid;
+        this.corp = corp;
     }
 }

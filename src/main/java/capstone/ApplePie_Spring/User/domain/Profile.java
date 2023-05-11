@@ -98,6 +98,7 @@ public class Profile extends BaseEntity {
         this.totalGrade = profileDto.getTotalGrade();
         this.grade = profileDto.getGrade();
         this.grader = profileDto.getGrader();
+        this.totalGrade = profileDto.getTotalGrade();
         this.github = profileDto.getGithub();
         this.devFramework = profileDto.getDevFramework();
         this.devLanguage = profileDto.getDevLanguage();
@@ -110,6 +111,7 @@ public class Profile extends BaseEntity {
         this.grade = signupDto.getGrade();
         this.area = signupDto.getArea();
         this.grader = signupDto.getArea();
+        this.totalGrade = signupDto.getTotalGrade();
         this.github = signupDto.getGithub();
         this.devFramework = signupDto.getDevFramework();
         this.devLanguage = signupDto.getDevLanguage();
@@ -121,6 +123,7 @@ public class Profile extends BaseEntity {
         this.grade = profileDto.getGrade();
         this.area = profileDto.getArea();
         this.grader = profileDto.getArea();
+        this.totalGrade = profileDto.getTotalGrade();
         this.github = profileDto.getGithub();
         this.devFramework = profileDto.getDevFramework();
         this.devLanguage = profileDto.getDevLanguage();

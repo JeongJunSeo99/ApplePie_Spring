@@ -24,6 +24,7 @@ public class FindProfileDto {
     private String area;
     private String college;
     private String grader;
+    private float totalGrade;
     private float grade;
     private String github;
     private String devFramework;
@@ -41,6 +42,7 @@ public class FindProfileDto {
         this.college = profile.getCollege();
         this.grader = profile.getGrader();
         this.grade = profile.getGrade();
+        this.totalGrade = profile.getTotalGrade();
         this.github = profile.getGithub();
         this.devFramework = profile.getDevFramework();
         this.devLanguage = languages;

@@ -25,6 +25,7 @@ public class UserDto {
     private String college;
     private String grader;
     private float grade;
+    private float totalGrade;
     private String github;
     private String devFramework;
     private List<Profile.Language> devLanguage;
@@ -38,7 +39,7 @@ public class UserDto {
         this.gender = user.getGender();
         //this.age = user.getAge();
         this.birth = user.getBirth();
-
+        this.totalGrade = profile.getTotalGrade();
         this.area = profile.getArea();
         this.college = profile.getCollege();
         this.grader = profile.getGrader();

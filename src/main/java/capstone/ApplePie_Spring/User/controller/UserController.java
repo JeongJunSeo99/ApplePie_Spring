@@ -1,5 +1,6 @@
 package capstone.ApplePie_Spring.User.controller;
 
+import capstone.ApplePie_Spring.Board.service.BoardService;
 import capstone.ApplePie_Spring.Profiles.service.ProfilesService;
 import capstone.ApplePie_Spring.User.dto.LoginDto;
 import capstone.ApplePie_Spring.User.dto.ProfileDto;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
     private final ProfilesService profilesService;
+    private final BoardService boardService;
 
     @GetMapping
     public String test() {
@@ -37,26 +39,32 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
+    @DeleteMapping("/{uid}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long uid) {
+        return new ResponseEntity<>(userService.delete(uid), HttpStatus.OK);
     }
 
     // 회원 정보 조회
-    @GetMapping("profile/{id}")
-    public ResponseEntity<Object> findProfile(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.findProfile(id), HttpStatus.OK);
+    @GetMapping("profile/{uid}")
+    public ResponseEntity<Object> findProfile(@PathVariable Long uid) {
+        return new ResponseEntity<>(userService.findProfile(uid), HttpStatus.OK);
     }
 
     // 회원 정보 수정
-    @PutMapping("profile/{id}")
-    public ResponseEntity<Object> findProfile(@PathVariable Long id, @RequestBody ProfileDto profileDto) {
-        return new ResponseEntity<>(userService.updateProfile(id, profileDto), HttpStatus.OK);
+    @PutMapping("profile/{uid}")
+    public ResponseEntity<Object> findProfile(@PathVariable Long uid, @RequestBody ProfileDto profileDto) {
+        return new ResponseEntity<>(userService.updateProfile(uid, profileDto), HttpStatus.OK);
     }
 
     // 개인 프로필 전체 조회 - 4개
-    @GetMapping("profiles/{pid}")
-    public ResponseEntity<Object> findUserProfiles(@PathVariable Long pid) {
-        return new ResponseEntity<>(profilesService.findUserProfiles(pid), HttpStatus.OK);
+    @GetMapping("profiles/{uid}")
+    public ResponseEntity<Object> findUserProfiles(@PathVariable Long uid) {
+        return new ResponseEntity<>(profilesService.findUserProfiles(uid), HttpStatus.OK);
+    }
+
+    // 작성한 글 조회
+    @GetMapping("/board/{uid}")
+    public ResponseEntity<Object> getBoards(@PathVariable Long uid) {
+        return new ResponseEntity<>(boardService.myBoardPagesBy(uid), HttpStatus.OK);
     }
 }

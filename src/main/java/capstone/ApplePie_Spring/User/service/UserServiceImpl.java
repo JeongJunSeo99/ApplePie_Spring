@@ -60,7 +60,8 @@ public class UserServiceImpl implements UserService{
 
         User user = findUser.get();
         if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) { // 비밀번호 일치
-            return new ResponseLogin(ExceptionCode.LOGIN_OK, user.getId());
+            Profile profile = profileRepository.findByUserIdAndStatus(user.getId(), STATUS).get();
+            return new ResponseLogin(ExceptionCode.LOGIN_OK, user.getId(), profile.getId(), user.isCorp());
         }
         return new ResponseUser(ExceptionCode.LOGIN_NOT_FOUND_PW);
     }
