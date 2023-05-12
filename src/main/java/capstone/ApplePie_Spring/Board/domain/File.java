@@ -25,7 +25,6 @@ public class File extends BaseEntity {
     private String url;
 
     // 연관 관계 매핑
-
     @JsonIgnore
     @ManyToOne
     private Board board;

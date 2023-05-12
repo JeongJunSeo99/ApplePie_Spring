@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.annotation.Nullable;
 
 @Getter
-public class BoardFindDto {
+public class FindBoardDto {
     private int categoryId;
     @Nullable
     private Long id; // 생략 가능, 전달된 마지막 board id

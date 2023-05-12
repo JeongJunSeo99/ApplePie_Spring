@@ -8,10 +8,13 @@ import capstone.ApplePie_Spring.Board.resposne.ResponseBoard;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoardAndTeam;
 import capstone.ApplePie_Spring.Board.resposne.ResponseBoardList;
 import capstone.ApplePie_Spring.Board.resposne.ResponseNoBoard;
+import capstone.ApplePie_Spring.Profiles.response.ResponseNoProfiles;
 import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.Team.dto.FindTeamDto;
 import capstone.ApplePie_Spring.Team.repository.TeamRepository;
+import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.User.domain.User;
+import capstone.ApplePie_Spring.User.repository.ProfileRepository;
 import capstone.ApplePie_Spring.User.repository.UserRepository;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 public class BoardServiceImpl implements BoardService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final BoardRepository boardRepository;
     private final TeamRepository teamRepository;
     private final FileService fileService;
@@ -105,8 +109,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Object BoardPagesBy(BoardFindDto boardFindDto) {
-        List<Board> boardList = fetchPages(boardFindDto);
+    public Object BoardPagesBy(FindBoardDto findBoardDto) {
+        List<Board> boardList = fetchPages(findBoardDto);
 
         List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
         for (Board board : boardList) {
@@ -152,36 +156,53 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Object delete(Long id) {
-        Optional<Board> findBoard = boardRepository.findByIdAndStatus(id, STATUS);
+    public Object delete(Long bid, Long uid) {
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty()) {
+            return new ResponseNoBoard(ExceptionCode.USER_FIND_NOT);
+        }
+
+        Optional<Board> findBoard = boardRepository.findByIdAndStatus(bid, STATUS);
         if (findBoard.isEmpty()) {
             return new ResponseNoBoard(ExceptionCode.BOARD_FIND_NOT);
         }
         Board board = findBoard.get();
         board.delete();
-
         return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_OK);
-        /*if (board.getUser().getId().equals(userId)) {
-            board.delete();
-            return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_OK);
-        }
-        return new ResponseNoBoard(ExceptionCode.BOARD_DELETE_NOT);*/
     }
 
-    private List<Board> fetchPages(BoardFindDto boardFindDto)  {
-        PageRequest pageRequest = PageRequest.of(0, boardFindDto.getSize());
-        Board.Category category = Board.Category.getValue(boardFindDto.getCategoryId());
+    @Override
+    public Object myBoardPagesBy(Long uid) {
+        Optional<User> findUser = userRepository.findByIdAndStatus(uid, STATUS);
+        if (findUser.isEmpty()) {
+            return new ResponseNoProfiles(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
 
-        Long checkId = boardFindDto.getId();
+        List<Board> findBoard = boardRepository.findAllByUserIdAndStatusOrderByIdDesc(findUser.get().getId(), STATUS);
+        List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
+        for (Board board : findBoard) {
+            findBoardListDtoList.add(FindBoardListDto.builder()
+                    .board(board)
+                    .file(fileService.findOne(board.getId(), 1))
+                    .build());
+        }
+        return new ResponseBoardList(ExceptionCode.BOARD_FIND_OK, findBoardListDtoList);
+    }
+
+    private List<Board> fetchPages(FindBoardDto findBoardDto)  {
+        PageRequest pageRequest = PageRequest.of(0, findBoardDto.getSize());
+        Board.Category category = Board.Category.getValue(findBoardDto.getCategoryId());
+
+        Long checkId = findBoardDto.getId();
         if (checkId == null) { // 처음 조회
-            if (boardFindDto.getKeyword() == null)
+            if (findBoardDto.getKeyword() == null)
                 return boardRepository.findAllByCategoryAndStatusOrderByIdDesc(category, STATUS, pageRequest);
-            return boardRepository.findAllByCategoryAndStatusAndTitleContainingOrderByIdDesc(category, boardFindDto.getKeyword(), STATUS, pageRequest);
+            return boardRepository.findAllByCategoryAndStatusAndTitleContainingOrderByIdDesc(category, findBoardDto.getKeyword(), STATUS, pageRequest);
         }
         else { // 불러오기
-            if (boardFindDto.getKeyword() == null)
-                return boardRepository.findAllByIdLessThanAndCategoryAndStatusOrderByIdDesc(boardFindDto.getId(), category, STATUS, pageRequest);
-            return boardRepository.findAllByIdLessThanAndCategoryAndStatusAndTitleContainingOrderByIdDesc(boardFindDto.getId(), category, STATUS, boardFindDto.getKeyword(), pageRequest);
+            if (findBoardDto.getKeyword() == null)
+                return boardRepository.findAllByIdLessThanAndCategoryAndStatusOrderByIdDesc(findBoardDto.getId(), category, STATUS, pageRequest);
+            return boardRepository.findAllByIdLessThanAndCategoryAndStatusAndTitleContainingOrderByIdDesc(findBoardDto.getId(), category, STATUS, findBoardDto.getKeyword(), pageRequest);
         }
     }
 

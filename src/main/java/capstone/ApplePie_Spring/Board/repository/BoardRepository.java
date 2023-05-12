@@ -13,6 +13,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Board save(Board board);
     Optional<Board> findByIdAndStatus(Long id, int status);
     boolean existsByIdAndStatus(Long id, int status);
+    List<Board> findAllByUserIdAndStatusOrderByIdDesc(Long userId, int status);
     List<Board> findAllByCategoryAndStatusOrderByIdDesc(Board.Category category, int status, Pageable pageable);
     List<Board> findAllByCategoryAndStatusAndTitleContainingOrderByIdDesc(Board.Category category, String title, int status, Pageable pageable);
     List<Board> findAllByIdLessThanAndCategoryAndStatusOrderByIdDesc(long id, Board.Category category, int status, Pageable pageable);

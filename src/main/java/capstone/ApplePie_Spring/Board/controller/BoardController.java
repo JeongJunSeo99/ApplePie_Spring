@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Board.controller;
 
-import capstone.ApplePie_Spring.Board.dto.BoardFindDto;
+import capstone.ApplePie_Spring.Board.dto.BoardUserDto;
+import capstone.ApplePie_Spring.Board.dto.FindBoardDto;
 import capstone.ApplePie_Spring.Board.dto.BoardSaveDto;
 import capstone.ApplePie_Spring.Board.dto.BoardUpdateDto;
 import capstone.ApplePie_Spring.Board.service.BoardServiceImpl;
@@ -36,9 +37,10 @@ public class BoardController {
 
     // 전체 글 조회
     @GetMapping
-    public ResponseEntity<Object> getBoards(@RequestBody BoardFindDto boardFindDto) {
-        return new ResponseEntity<>(boardService.BoardPagesBy(boardFindDto), HttpStatus.OK);
+    public ResponseEntity<Object> getBoards(@RequestBody FindBoardDto findBoardDto) {
+        return new ResponseEntity<>(boardService.BoardPagesBy(findBoardDto), HttpStatus.OK);
     }
+
 
     // 수정
     @PutMapping("/{bid}")
@@ -49,7 +51,7 @@ public class BoardController {
 
     // 삭제
     @DeleteMapping("/{bid}")
-    public ResponseEntity<Object> delete(@PathVariable long bid) {
-        return new ResponseEntity<>(boardService.delete(bid), HttpStatus.OK);
+    public ResponseEntity<Object> delete(@PathVariable long bid, @RequestBody BoardUserDto boardUserDto) {
+        return new ResponseEntity<>(boardService.delete(bid, boardUserDto.getUserId()), HttpStatus.OK);
     }
 }
