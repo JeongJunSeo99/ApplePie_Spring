@@ -1,10 +1,8 @@
 package capstone.ApplePie_Spring.Profiles.controller;
 
-import capstone.ApplePie_Spring.Profiles.dto.LessonDto;
-import capstone.ApplePie_Spring.Profiles.dto.OutsourcingDto;
-import capstone.ApplePie_Spring.Profiles.dto.ProfilesFindDto;
-import capstone.ApplePie_Spring.Profiles.dto.ProjectDto;
+import capstone.ApplePie_Spring.Profiles.dto.*;
 import capstone.ApplePie_Spring.Profiles.service.ProfilesService;
+import capstone.ApplePie_Spring.User.dto.ProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,67 +15,24 @@ public class ProfilesController {
 
     private final ProfilesService profilesService;
 
-    // 카테고리별 프로필
-
-    @GetMapping("/project")
+    @GetMapping
     public ResponseEntity<Object> findProject(@RequestBody ProfilesFindDto profilesFindDto) {
-        return new ResponseEntity<>(profilesService.findProject(profilesFindDto), HttpStatus.OK);
+        return new ResponseEntity<>(profilesService.findProfiles(profilesFindDto), HttpStatus.OK);
     }
 
-    @GetMapping("/lesson")
-    public ResponseEntity<Object> findLesson(@RequestBody ProfilesFindDto profilesFindDto) {
-        return new ResponseEntity<>(profilesService.findLesson(profilesFindDto), HttpStatus.OK);
+    @PostMapping("/{pid}")
+    public ResponseEntity<Object> saveProject(@PathVariable Long pid, @RequestBody ProfilesDto profilesDto) {
+        return new ResponseEntity<>(profilesService.saveProfiles(pid, profilesDto), HttpStatus.OK);
     }
 
-    @GetMapping("/outsourcing")
-    public ResponseEntity<Object> findOutsourcing(@RequestBody ProfilesFindDto profilesFindDto) {
-        return new ResponseEntity<>(profilesService.findOutsourcing(profilesFindDto), HttpStatus.OK);
-    }
-
-    @PostMapping("/project/{pid}")
-    public ResponseEntity<Object> saveProject(@PathVariable Long pid, @RequestBody ProjectDto projectDto) {
-        return new ResponseEntity<>(profilesService.saveProject(pid, projectDto), HttpStatus.OK);
-    }
-
-    @PutMapping("/project/{pid}")
-    public ResponseEntity<Object> updateProject(@PathVariable Long pid, @RequestBody ProjectDto projectDto) {
-        return new ResponseEntity<>(profilesService.updateProject(pid, projectDto), HttpStatus.OK);
-    }
-
-    @PostMapping("/lesson/{pid}")
-    public ResponseEntity<Object> saveLesson(@PathVariable Long pid, @RequestBody LessonDto lessonDto) {
-        return new ResponseEntity<>(profilesService.saveLesson(pid, lessonDto), HttpStatus.OK);
-    }
-
-    @PutMapping("/lesson/{pid}")
-    public ResponseEntity<Object> updateLesson(@PathVariable Long pid, @RequestBody LessonDto lessonDto) {
-        return new ResponseEntity<>(profilesService.updateLesson(pid, lessonDto), HttpStatus.OK);
-    }
-
-    @PostMapping("/outsourcing/{pid}")
-    public ResponseEntity<Object> saveOutsourcing(@PathVariable Long pid, @RequestBody OutsourcingDto outsourcingDto) {
-        return new ResponseEntity<>(profilesService.saveOutsourcing(pid, outsourcingDto), HttpStatus.OK);
-    }
-
-    @PutMapping("/outsourcing/{pid}")
-    public ResponseEntity<Object> updateOutsourcing(@PathVariable Long pid, @RequestBody OutsourcingDto outsourcingDto) {
-        return new ResponseEntity<>(profilesService.updateOutsourcing(pid, outsourcingDto), HttpStatus.OK);
+    @PutMapping("/{pid}")
+    public ResponseEntity<Object> updateProject(@PathVariable Long pid, @RequestBody ProfilesDto profilesDto) {
+        return new ResponseEntity<>(profilesService.updateProfiles(pid, profilesDto), HttpStatus.OK);
     }
 
     // open 상태 변경
-
-    @PutMapping("/lesson/open/{pid}")
-    public ResponseEntity<Object> updateOpenLesson(@PathVariable Long pid, @RequestBody boolean open) {
-        return new ResponseEntity<>(profilesService.updateOpenLesson(pid, open), HttpStatus.OK);
-    }
-
-    @PutMapping("/outsourcing/open/{pid}")
-    public ResponseEntity<Object> saveOpenOutsourcing(@PathVariable Long pid, @RequestBody boolean open) {
-        return new ResponseEntity<>(profilesService.updateOpenOutsourcing(pid, open), HttpStatus.OK);
-    }
-
-    @PutMapping("/project/open/{pid}")
-    public ResponseEntity<Object> updateOpenProject(@PathVariable Long pid, boolean open) {
-        return new ResponseEntity<>(profilesService.updateOpenProject(pid, open), HttpStatus.OK);
+    @PutMapping("/open/{pid}")
+    public ResponseEntity<Object> updateOpenLesson(@PathVariable Long pid, @RequestBody OpenDto openDto) {
+        return new ResponseEntity<>(profilesService.openProfiles(pid, openDto), HttpStatus.OK);
     }
 }

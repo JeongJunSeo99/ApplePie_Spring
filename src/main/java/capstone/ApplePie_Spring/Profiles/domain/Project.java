@@ -29,6 +29,9 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private boolean open;
 
+    @Column(length = 15)
+    private String introduce;
+
     // 연관 관계 매핑
     @JsonIgnore
     @OneToOne
@@ -44,16 +47,17 @@ public class Project extends BaseEntity {
     }
 
     @Builder
-    public Project(String part, String projectSelf, boolean open, Profile profile) {
+    public Project(String introduce, String part, String projectSelf, boolean open, Profile profile) {
+        this.introduce = introduce;
         this.part = part;
         this.projectSelf = projectSelf;
         this.open = open;
         this.profile = profile;
     }
 
-    public void update(ProjectDto projectDto) {
-        this.part = projectDto.getPart();
-        this.projectSelf = projectDto.getProjectSelf();
-        this.open = projectDto.isOpen();
+    public void update(Project project) {
+        this.part = project.getPart();
+        this.projectSelf = project.getProjectSelf();
+        this.open = project.isOpen();
     }
 }

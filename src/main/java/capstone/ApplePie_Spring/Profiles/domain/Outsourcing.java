@@ -29,6 +29,9 @@ public class Outsourcing extends BaseEntity {
     @Column(nullable = false)
     private boolean open;
 
+    @Column(length = 15)
+    private String introduce;
+
     // 연관 관계 매핑
     @JsonIgnore
     @OneToOne
@@ -44,16 +47,17 @@ public class Outsourcing extends BaseEntity {
     }
 
     @Builder
-    public Outsourcing(String career, String outsourcingSelf, boolean open, Profile profile) {
+    public Outsourcing(String introduce, String career, String outsourcingSelf, boolean open, Profile profile) {
+        this.introduce = introduce;
         this.career = career;
         this.outsourcingSelf = outsourcingSelf;
         this.open = open;
         this.profile = profile;
     }
 
-    public void update(OutsourcingDto outsourcingDto) {
-        this.career = outsourcingDto.getCareer();
-        this.outsourcingSelf = outsourcingDto.getOutsourcingSelf();
-        this.open = outsourcingDto.isOpen();
+    public void update(Outsourcing outsourcing) {
+        this.career = outsourcing.getCareer();
+        this.outsourcingSelf = outsourcing.getOutsourcingSelf();
+        this.open = outsourcing.isOpen();
     }
 }

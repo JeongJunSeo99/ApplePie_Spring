@@ -30,6 +30,9 @@ public class Lesson extends BaseEntity {
     @Column(nullable = false)
     private boolean open;
 
+    @Column(length = 15)
+    private String introduce;
+
     // 연관 관계 매핑
     @JsonIgnore
     @OneToOne
@@ -46,17 +49,18 @@ public class Lesson extends BaseEntity {
 
 
     @Builder
-    public Lesson(String subject, String lessonSelf, boolean open, Profile profile) {
+    public Lesson(String introduce, String subject, String lessonSelf, boolean open, Profile profile) {
+        this.introduce = introduce;
         this.subject = subject;
         this.lessonSelf = lessonSelf;
         this.open = open;
         this.profile = profile;
     }
 
-    public void update(LessonDto lessonDto) {
-        this.subject = lessonDto.getSubject();
-        this.lessonSelf = lessonDto.getLessonSelf();
-        this.open = lessonDto.isOpen();
+    public void update(Lesson lesson) {
+        this.subject = lesson.getSubject();
+        this.lessonSelf = lesson.getLessonSelf();
+        this.open = lesson.isOpen();
     }
 
 }

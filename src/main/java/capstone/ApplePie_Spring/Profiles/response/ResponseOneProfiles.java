@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ResponseOneProfiles extends ResponseType {
-    private List<Object> data;
     private LessonDto lesson;
     private ProjectDto project;
     private OutsourcingDto outsourcing;
@@ -33,6 +32,7 @@ public class ResponseOneProfiles extends ResponseType {
         ProjectDto projectDto = null;
         if (project != null) {
             projectDto = ProjectDto.builder()
+                    .introduce(project.getIntroduce())
                     .part(project.getPart())
                     .projectSelf(project.getProjectSelf())
                     .open(project.isOpen())
@@ -45,6 +45,7 @@ public class ResponseOneProfiles extends ResponseType {
         LessonDto lessonDto = null;
         if (lesson != null) {
             lessonDto = LessonDto.builder()
+                    .introduce(lesson.getIntroduce())
                     .subject(lesson.getSubject())
                     .lessonSelf(lesson.getLessonSelf())
                     .open(lesson.isOpen())
@@ -57,6 +58,7 @@ public class ResponseOneProfiles extends ResponseType {
         OutsourcingDto outsourcingDto = null;
         if (outsourcing != null) {
             outsourcingDto = OutsourcingDto.builder()
+                    .introduce(outsourcing.getIntroduce())
                     .career(outsourcing.getCareer())
                     .outsourcingSelf(outsourcing.getOutsourcingSelf())
                     .open(outsourcing.isOpen())
