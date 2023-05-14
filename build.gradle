@@ -21,9 +21,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
 	// extension
-	implementation 'commons-io:commons-io:2.6'
+	implementation 'commons-io:commons-io:2.11.0'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
