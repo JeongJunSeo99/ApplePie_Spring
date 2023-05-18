@@ -1,8 +1,10 @@
 package capstone.ApplePie_Spring.Team.service;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
+import capstone.ApplePie_Spring.Board.dto.FindBoardListDto;
 import capstone.ApplePie_Spring.Board.repository.BoardRepository;
 import capstone.ApplePie_Spring.Board.resposne.ResponseNoBoard;
+import capstone.ApplePie_Spring.Board.service.FileService;
 import capstone.ApplePie_Spring.Team.domain.Member;
 import capstone.ApplePie_Spring.Team.domain.TeamVolunteer;
 import capstone.ApplePie_Spring.Team.domain.Volunteer;
@@ -36,6 +38,7 @@ public class TeamServiceImpl implements TeamService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final FileService fileService;
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final VolunteerRepository volunteerRepository;
@@ -170,11 +173,29 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Object findTeam(Long userId) {
+        Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
+        if (findUser.isEmpty()) {
+            return new ResponseTeam(ExceptionCode.USER_FIND_NOT);
+        }
+
+        List<FindBoardListDto> board = myBoardPagesBy(userId);
         List<Team> result1 = findCompleteTeam(userId);
         List<Team> result2 = findUserTeam(userId);
         List<Team> result3 = findApplyTeam(userId);
-        return new ResponseUserTeam(ExceptionCode.TEAM_FIND_OK,
+        return new ResponseUserTeam(ExceptionCode.TEAM_FIND_OK, board,
                 result1, result2, result3);
+    }
+
+    public List<FindBoardListDto> myBoardPagesBy(Long uid) {
+        List<Board> findBoard = boardRepository.findAllByUserIdAndStatusOrderByIdDesc(uid, STATUS);
+        List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
+        for (Board board : findBoard) {
+            findBoardListDtoList.add(FindBoardListDto.builder()
+                    .board(board)
+                    .file(fileService.findOne(board.getId(), 1))
+                    .build());
+        }
+        return findBoardListDtoList;
     }
 
     @Override  // 지원한 팀 경우 -> 지원 취소 & 자기 팀인 경우 -> 팀 취소(team_status = 0처리)

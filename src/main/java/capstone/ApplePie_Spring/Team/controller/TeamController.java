@@ -61,7 +61,7 @@ public class TeamController {
         return new ResponseEntity<>(volunteerService.getVolunteers(uid, volunteerDto), HttpStatus.OK);
     }
 
-    // 팀원 처리 /
+    // 팀원 처리
     @PostMapping("/member")
     public ResponseEntity<Object> updateVolunteerToMember(@RequestBody MemberDto memberDto) {
         return new ResponseEntity<>(memberService.save(memberDto), HttpStatus.OK);

@@ -18,4 +18,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findAllByCategoryAndStatusAndTitleContainingOrderByIdDesc(Board.Category category, String title, int status, Pageable pageable);
     List<Board> findAllByIdLessThanAndCategoryAndStatusOrderByIdDesc(long id, Board.Category category, int status, Pageable pageable);
     List<Board> findAllByIdLessThanAndCategoryAndStatusAndTitleContainingOrderByIdDesc(long id, Board.Category category, int status, String title, Pageable pageable);
+    List<Board> findAllByCategoryAndStatusOrderByViewCountDesc(Board.Category category, int status);
 }

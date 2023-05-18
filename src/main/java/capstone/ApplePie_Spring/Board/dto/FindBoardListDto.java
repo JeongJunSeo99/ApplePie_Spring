@@ -16,7 +16,7 @@ public class FindBoardListDto {
     private Long id;
     private String title;
     private String content;
-    private int view_count;
+    private int viewCount;
     private Board.Category categoryId;
     private String file;
     private LocalDate deadline;
@@ -29,13 +29,10 @@ public class FindBoardListDto {
         this.categoryId = board.getCategory();
 
         this.title = board.getTitle();
-        this.view_count = board.getView_count();
+        this.viewCount = board.getViewCount();
 
         this.deadline = board.getDeadline();
-        this. status = false;
-        if (LocalDate.now().compareTo(board.getDeadline()) <= 1) {
-            this.status = true;
-        }
+        this.status = LocalDate.now().compareTo(board.getDeadline()) <= 1;
 
         if (board.getFiles().size() == 0) {
             this.file = null;

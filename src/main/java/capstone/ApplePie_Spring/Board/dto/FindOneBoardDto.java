@@ -7,7 +7,6 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Getter
 public class FindOneBoardDto {
 
@@ -15,7 +14,7 @@ public class FindOneBoardDto {
     private Long id;
     private String title;
     private String content;
-    private int view_count;
+    private int viewCount;
     private Board.Category category;
     private LocalDate deadline;
     private List<String> files;
@@ -26,7 +25,7 @@ public class FindOneBoardDto {
         this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.view_count = board.getView_count();
+        this.viewCount = board.getViewCount();
         this.category = board.getCategory();
         this.deadline = board.getDeadline();
         files = urlList;

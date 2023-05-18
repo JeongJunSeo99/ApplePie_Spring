@@ -33,7 +33,7 @@ public class Board extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    private int view_count;
+    private int viewCount;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate deadline;
@@ -78,7 +78,7 @@ public class Board extends BaseEntity {
     public Board(BoardSaveDto boardSaveDto, User user) {
         this.title = boardSaveDto.getTitle();
         this.content = boardSaveDto.getContent();
-        this.view_count = 0;
+        this.viewCount = 0;
         this.category = boardSaveDto.getCategory();
         this.deadline = boardSaveDto.getDeadline();
 
@@ -94,7 +94,7 @@ public class Board extends BaseEntity {
     }
 
     public void addViewCount() {
-        this.view_count += 1;
+        this.viewCount += 1;
     }
 
     public void setFiles(List<File> files) {
