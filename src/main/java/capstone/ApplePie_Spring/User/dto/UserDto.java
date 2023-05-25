@@ -21,9 +21,7 @@ public class UserDto {
     private char gender;
     //private int age;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;
-
     private String area;
     private String college;
     private String grader;

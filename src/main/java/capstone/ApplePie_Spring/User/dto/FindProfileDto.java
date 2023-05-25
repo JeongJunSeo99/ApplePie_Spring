@@ -21,8 +21,6 @@ public class FindProfileDto {
     private String nickname;
     private boolean corp;
     private char gender;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;
     private String area;
     private String college;

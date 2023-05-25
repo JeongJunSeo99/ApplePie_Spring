@@ -21,7 +21,6 @@ public class FindBoardListDto {
     private Board.Category categoryId;
     private String file;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
     private boolean status; // 만료 여부
 

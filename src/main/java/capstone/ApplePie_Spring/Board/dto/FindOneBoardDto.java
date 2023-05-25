@@ -18,7 +18,6 @@ public class FindOneBoardDto {
     private int viewCount;
     private Board.Category category;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
     private List<String> files;
 

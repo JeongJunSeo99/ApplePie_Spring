@@ -13,6 +13,5 @@ public class BoardSaveDto {
     private String title;
     private String content;
     private Board.Category category;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
 }
