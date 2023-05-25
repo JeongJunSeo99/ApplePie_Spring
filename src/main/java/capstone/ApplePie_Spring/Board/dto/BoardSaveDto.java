@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Board.dto;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -12,5 +13,6 @@ public class BoardSaveDto {
     private String title;
     private String content;
     private Board.Category category;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
 }

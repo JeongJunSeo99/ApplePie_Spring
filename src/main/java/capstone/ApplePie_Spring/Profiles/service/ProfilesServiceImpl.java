@@ -36,7 +36,7 @@ public class ProfilesServiceImpl implements ProfilesService {
     private final ProjectRepository projectRepository;
 
     private static final Integer STATUS = 1;
-    private static final Boolean OPEN = Boolean.TRUE;
+    private static final boolean OPEN = true;
 
 
     @Override

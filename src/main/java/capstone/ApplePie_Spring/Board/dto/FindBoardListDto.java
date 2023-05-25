@@ -2,6 +2,7 @@ package capstone.ApplePie_Spring.Board.dto;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
 import capstone.ApplePie_Spring.Board.domain.File;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,6 +20,8 @@ public class FindBoardListDto {
     private int viewCount;
     private Board.Category categoryId;
     private String file;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
     private boolean status; // 만료 여부
 

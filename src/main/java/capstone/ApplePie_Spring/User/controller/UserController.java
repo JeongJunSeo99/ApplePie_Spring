@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -27,7 +26,8 @@ public class UserController {
     }
 
     // 회원가입
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup")
+    // consumes = "application/x-www-form-urlencoded"
     public ResponseEntity<Object> signup(@RequestBody SignupDto signupDto) throws Exception {
         return new ResponseEntity<>(userService.signup(signupDto), HttpStatus.OK);
     }

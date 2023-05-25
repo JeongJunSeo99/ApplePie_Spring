@@ -2,6 +2,7 @@ package capstone.ApplePie_Spring.User.dto;
 
 import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.User.domain.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,8 @@ public class UserDto {
     private boolean corp;
     private char gender;
     //private int age;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birth;
 
     private String area;

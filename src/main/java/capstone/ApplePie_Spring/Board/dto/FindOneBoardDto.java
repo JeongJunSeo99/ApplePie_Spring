@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Board.dto;
 
 import capstone.ApplePie_Spring.Board.domain.Board;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,6 +17,8 @@ public class FindOneBoardDto {
     private String content;
     private int viewCount;
     private Board.Category category;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
     private List<String> files;
 

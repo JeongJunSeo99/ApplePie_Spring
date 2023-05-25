@@ -5,6 +5,7 @@ import capstone.ApplePie_Spring.Board.dto.BoardUpdateDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
 import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.User.domain.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,7 +36,7 @@ public class Board extends BaseEntity {
 
     private int viewCount;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
 
     // 연관 관계 매핑
