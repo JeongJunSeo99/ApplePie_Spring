@@ -36,7 +36,7 @@ public class BoardController {
 
 
     // 전체 글 조회
-    @GetMapping
+    @PostMapping("/all") // get
     public ResponseEntity<Object> getBoards(@RequestBody FindBoardDto findBoardDto) {
         return new ResponseEntity<>(boardService.BoardPagesBy(findBoardDto), HttpStatus.OK);
     }

@@ -15,7 +15,7 @@ public class ProfilesController {
 
     private final ProfilesService profilesService;
 
-    @GetMapping
+    @PostMapping // get
     public ResponseEntity<Object> findProject(@RequestBody ProfilesFindDto profilesFindDto) {
         return new ResponseEntity<>(profilesService.findProfiles(profilesFindDto), HttpStatus.OK);
     }

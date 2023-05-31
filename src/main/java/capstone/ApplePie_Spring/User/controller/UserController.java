@@ -57,9 +57,9 @@ public class UserController {
     }
 
     // 개인 프로필 전체 조회 - 4개
-    @GetMapping("profiles/{uid}")
-    public ResponseEntity<Object> findUserProfiles(@PathVariable Long uid) {
-        return new ResponseEntity<>(profilesService.findUserProfiles(uid), HttpStatus.OK);
+    @GetMapping("profiles/{pid}")
+    public ResponseEntity<Object> findUserProfiles(@PathVariable Long pid) {
+        return new ResponseEntity<>(profilesService.findUserProfiles(pid), HttpStatus.OK);
     }
 
     // 작성한 글 조회

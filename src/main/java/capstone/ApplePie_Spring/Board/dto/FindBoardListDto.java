@@ -43,7 +43,6 @@ public class FindBoardListDto {
             this.file = board.getFiles().get(0).getUrl();
         }
 
-        List<File> fileList = board.getFiles();
         if (board.getContent().length() > 16) {
             this.content = board.getContent().substring(0,14); // 15글자
         }

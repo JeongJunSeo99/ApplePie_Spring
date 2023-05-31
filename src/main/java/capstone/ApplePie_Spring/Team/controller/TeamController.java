@@ -56,7 +56,7 @@ public class TeamController {
     }
 
     // 지원자 리스트 조회
-    @GetMapping("/volunteer/{uid}")
+    @PostMapping("/volunteer/{uid}") //get
     public ResponseEntity<Object> findVolunteers(@PathVariable Long uid, @RequestBody FindVolunteerDto volunteerDto) {
         return new ResponseEntity<>(volunteerService.getVolunteers(uid, volunteerDto), HttpStatus.OK);
     }
@@ -68,7 +68,7 @@ public class TeamController {
     }
 
     // 팀의 팀원들 조회
-    @GetMapping("/member")
+    @PostMapping("/member/all") // get
     public ResponseEntity<Object> getMember(@RequestBody FindMemberDto findMemberDto) {
         return new ResponseEntity<>(memberService.getMembers(findMemberDto), HttpStatus.OK);
     }
