@@ -8,20 +8,19 @@ import capstone.ApplePie_Spring.Profiles.dto.*;
 import capstone.ApplePie_Spring.Profiles.repository.LessonRepository;
 import capstone.ApplePie_Spring.Profiles.repository.OutsourcingRepository;
 import capstone.ApplePie_Spring.Profiles.repository.ProjectRepository;
-import capstone.ApplePie_Spring.Profiles.response.ResponseNoProfiles;
-import capstone.ApplePie_Spring.Profiles.response.ResponseOneProfiles;
-import capstone.ApplePie_Spring.Profiles.response.ResponseProfiles;
-import capstone.ApplePie_Spring.Profiles.response.ResponseProfilesList;
+import capstone.ApplePie_Spring.Profiles.response.*;
 import capstone.ApplePie_Spring.Team.resposne.ResponseTeam;
 import capstone.ApplePie_Spring.User.domain.Profile;
+import capstone.ApplePie_Spring.User.domain.User;
 import capstone.ApplePie_Spring.User.repository.ProfileRepository;
+import capstone.ApplePie_Spring.User.repository.UserRepository;
+import capstone.ApplePie_Spring.User.response.ResponseUser;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProfilesServiceImpl implements ProfilesService {
 
+    private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final LessonRepository lessonRepository;
     private final OutsourcingRepository outsourcingRepository;
@@ -43,19 +43,51 @@ public class ProfilesServiceImpl implements ProfilesService {
     public Object findProfiles(ProfilesFindDto profilesFindDto) {
 
         if (profilesFindDto.getCategory().equals(Board.Category.OUTSOURCING)) {
-            return new ResponseProfilesList(ExceptionCode.PROFILES_FIND_OK, findOutsourcing(profilesFindDto));
+            return new ResponseOutsourcingList(ExceptionCode.PROFILES_FIND_OK, findOutsourcing(profilesFindDto));
         }
         else if (profilesFindDto.getCategory().equals(Board.Category.LESSON)) {
-            return new ResponseProfilesList(ExceptionCode.PROFILES_FIND_OK, findLesson(profilesFindDto));
+            return new ResponseLessonList(ExceptionCode.PROFILES_FIND_OK, findLesson(profilesFindDto));
         }
         else {
-            return new ResponseProfilesList(ExceptionCode.PROFILES_FIND_OK, findProject(profilesFindDto));
+            return new ResponseProjectList(ExceptionCode.PROFILES_FIND_OK, findProject(profilesFindDto));
         }
-
-
     }
 
-    public List<Object> findProject(ProfilesFindDto profilesFindDto) {
+    @Override
+    public Object findOneProfiles(OneProfilesFindDto oneProfilesFindDto) {
+        if (oneProfilesFindDto.getCategory().equals(Board.Category.OUTSOURCING)) {
+            Optional<Outsourcing> findProfiles = outsourcingRepository
+                    .findByIdAndStatus(oneProfilesFindDto.getOid(), STATUS);
+            if (findProfiles.isEmpty()) {
+                return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
+            }
+            Optional<Profile> findProfile = profileRepository
+                    .findByIdAndStatus(findProfiles.get().getId(), STATUS);
+            return new ResponseOne(ExceptionCode.PROFILES_FIND_OK, findProfiles.get(), findProfile.get());
+        }
+        else if (oneProfilesFindDto.getCategory().equals(Board.Category.LESSON)) {
+            Optional<Lesson> findProfiles = lessonRepository
+                    .findByIdAndStatus(oneProfilesFindDto.getOid(), STATUS);
+            if (findProfiles.isEmpty()) {
+                return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
+            }
+            Optional<Profile> findProfile = profileRepository
+                    .findByIdAndStatus(findProfiles.get().getId(), STATUS);
+            return new ResponseOne(ExceptionCode.PROFILES_FIND_OK, findProfiles.get(), findProfile.get());
+        }
+        else {
+            Optional<Project> findProfiles = projectRepository
+                    .findByIdAndStatus(oneProfilesFindDto.getOid(), STATUS);
+            if (findProfiles.isEmpty()) {
+                return new ResponseNoProfiles(ExceptionCode.PROFILES_FIND_NOT);
+            }
+            Optional<Profile> findProfile = profileRepository
+                    .findByIdAndStatus(findProfiles.get().getId(), STATUS);
+            return new ResponseOne(ExceptionCode.PROFILES_FIND_OK, findProfiles.get(), findProfile.get());
+        }
+    }
+
+    public List<Project> findProject(ProfilesFindDto profilesFindDto) {
         List<Project> profiles;
         PageRequest pageRequest = PageRequest.of(0, profilesFindDto.getSize());
 
@@ -65,10 +97,10 @@ public class ProfilesServiceImpl implements ProfilesService {
         else {
             profiles = projectRepository.findAllByIdLessThanAndStatusAndOpenOrderByIdDesc(profilesFindDto.getId(), STATUS, OPEN, pageRequest);
         }
-        return Collections.singletonList(profiles);
+        return profiles;
     }
 
-    public List<Object> findLesson(ProfilesFindDto profilesFindDto) {
+    public List<Lesson> findLesson(ProfilesFindDto profilesFindDto) {
         List<Lesson> profiles;
         PageRequest pageRequest = PageRequest.of(0, profilesFindDto.getSize());
 
@@ -78,10 +110,10 @@ public class ProfilesServiceImpl implements ProfilesService {
         else {
             profiles = lessonRepository.findAllByIdLessThanAndStatusAndOpenOrderByIdDesc(profilesFindDto.getId(), STATUS, OPEN, pageRequest);
         }
-        return Collections.singletonList(profiles);
+        return profiles;
     }
 
-    public List<Object> findOutsourcing(ProfilesFindDto profilesFindDto) {
+    public List<Outsourcing> findOutsourcing(ProfilesFindDto profilesFindDto) {
         List<Outsourcing> profiles;
         PageRequest pageRequest = PageRequest.of(0, profilesFindDto.getSize());
 
@@ -91,7 +123,7 @@ public class ProfilesServiceImpl implements ProfilesService {
         else {
             profiles = outsourcingRepository.findAllByIdLessThanAndStatusAndOpenOrderByIdDesc(profilesFindDto.getId(), STATUS, OPEN, pageRequest);
         }
-        return Collections.singletonList(profiles);
+        return profiles;
     }
 
     @Override
@@ -181,6 +213,38 @@ public class ProfilesServiceImpl implements ProfilesService {
             outsourcing = findOutsourcing.get();
         }
         return new ResponseOneProfiles(ExceptionCode.PROFILES_FIND_OK, lesson, project, outsourcing);
+    }
+
+
+    @Override
+    public Object findAllProfiles(Long userId) {
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
+        if (findProfile.isEmpty()) {
+            Optional<User> findUser = userRepository.findByIdAndStatus(userId, STATUS);
+            return new ResponseUser(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        Profile profile = findProfile.get();
+        User user = profile.getUser();
+
+        Optional<Lesson> findLesson = lessonRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+        Optional<Project> findProject = projectRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+        Optional<Outsourcing> findOutsourcing = outsourcingRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+
+        Lesson lesson = null;
+        Project project = null;
+        Outsourcing outsourcing = null;
+
+        if (findLesson.isPresent()) {
+            lesson = findLesson.get();
+        }
+        if (findProject.isPresent()) {
+            project = findProject.get();
+        }
+        if (findOutsourcing.isPresent()) {
+            outsourcing = findOutsourcing.get();
+        }
+
+        return new ResponseAllProfiles(ExceptionCode.USER_PROFILE_FIND_OK, user, profile, lesson, project, outsourcing);
     }
 
     public Object updateLesson(Long profileId, Lesson lesson) {

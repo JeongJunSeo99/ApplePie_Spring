@@ -3,6 +3,7 @@ package capstone.ApplePie_Spring.User.service;
 import capstone.ApplePie_Spring.User.dto.ProfileDto;
 import capstone.ApplePie_Spring.User.response.ResponseProfile;
 import capstone.ApplePie_Spring.User.response.ResponseLogin;
+import capstone.ApplePie_Spring.User.response.ResponseSignup;
 import capstone.ApplePie_Spring.User.response.ResponseUser;
 import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.User.domain.User;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService{
                 .user(user)
                 .build();
         profileRepository.save(profile);
-        return new ResponseUser(ExceptionCode.SIGNUP_CREATED_OK);
+        return new ResponseSignup(ExceptionCode.SIGNUP_CREATED_OK, user.getId(), profile.getId());
     }
 
     @Override

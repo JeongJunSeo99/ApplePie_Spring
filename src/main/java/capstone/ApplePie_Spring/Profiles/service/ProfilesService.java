@@ -8,9 +8,13 @@ public interface ProfilesService {
 
     Object findProfiles(ProfilesFindDto profilesFindDto);
 
+    Object findOneProfiles(OneProfilesFindDto oneProfilesFindDto);
+
     Object saveProfiles(Long pid, ProfilesDto profilesDto);
 
     Object updateProfiles(Long pid, ProfilesDto profilesDto);
 
     Object openProfiles(Long pid, OpenDto openDto);
+
+    Object findAllProfiles(Long userId);
 }

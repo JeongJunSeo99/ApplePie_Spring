@@ -62,9 +62,18 @@ public class UserController {
         return new ResponseEntity<>(profilesService.findUserProfiles(pid), HttpStatus.OK);
     }
 
+    // 회원정보와 개인 프로필 정보 조회
+    @GetMapping("profiles/all/{pid}")
+    public ResponseEntity<Object> findAllUserProfiles(@PathVariable Long pid) {
+        return new ResponseEntity<>(profilesService.findAllProfiles(pid), HttpStatus.OK);
+    }
+
+
     // 작성한 글 조회
     @GetMapping("/board/{uid}")
     public ResponseEntity<Object> getBoards(@PathVariable Long uid) {
         return new ResponseEntity<>(boardService.myBoardPagesBy(uid), HttpStatus.OK);
     }
+
+
 }

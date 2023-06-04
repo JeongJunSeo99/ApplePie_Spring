@@ -20,6 +20,12 @@ public class ProfilesController {
         return new ResponseEntity<>(profilesService.findProfiles(profilesFindDto), HttpStatus.OK);
     }
 
+    /*@PostMapping("/one") // get
+    public ResponseEntity<Object> findProject(@RequestBody OneProfilesFindDto oneProfilesFindDto) {
+        return new ResponseEntity<>(profilesService.findOneProfiles(oneProfilesFindDto), HttpStatus.OK);
+    }*/
+
+
     @PostMapping("/{pid}")
     public ResponseEntity<Object> saveProject(@PathVariable Long pid, @RequestBody ProfilesDto profilesDto) {
         return new ResponseEntity<>(profilesService.saveProfiles(pid, profilesDto), HttpStatus.OK);

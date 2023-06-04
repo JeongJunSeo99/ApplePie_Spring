@@ -5,6 +5,13 @@ import capstone.ApplePie_Spring.Board.dto.FindBoardListDto;
 import capstone.ApplePie_Spring.Board.repository.BoardRepository;
 import capstone.ApplePie_Spring.Board.resposne.ResponseNoBoard;
 import capstone.ApplePie_Spring.Board.service.FileService;
+import capstone.ApplePie_Spring.Profiles.domain.Lesson;
+import capstone.ApplePie_Spring.Profiles.domain.Outsourcing;
+import capstone.ApplePie_Spring.Profiles.domain.Project;
+import capstone.ApplePie_Spring.Profiles.repository.LessonRepository;
+import capstone.ApplePie_Spring.Profiles.repository.OutsourcingRepository;
+import capstone.ApplePie_Spring.Profiles.repository.ProjectRepository;
+import capstone.ApplePie_Spring.Profiles.response.ResponseNoProfiles;
 import capstone.ApplePie_Spring.Team.domain.Member;
 import capstone.ApplePie_Spring.Team.domain.TeamVolunteer;
 import capstone.ApplePie_Spring.Team.domain.Volunteer;
@@ -17,8 +24,11 @@ import capstone.ApplePie_Spring.Team.repository.VolunteerRepository;
 import capstone.ApplePie_Spring.Team.repository.TeamRepository;
 import capstone.ApplePie_Spring.Team.resposne.ResponseTeam;
 import capstone.ApplePie_Spring.Team.resposne.ResponseUserTeam;
+import capstone.ApplePie_Spring.User.domain.Profile;
 import capstone.ApplePie_Spring.User.domain.User;
+import capstone.ApplePie_Spring.User.repository.ProfileRepository;
 import capstone.ApplePie_Spring.User.repository.UserRepository;
+import capstone.ApplePie_Spring.User.response.ResponseUser;
 import capstone.ApplePie_Spring.validation.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +45,11 @@ public class TeamServiceImpl implements TeamService {
 
     private static final Integer STATUS = 1;
     // private static final Integer COMPLETE = 2; TEAM에서는 TEAM_STATUS로 구분
+
+    private final LessonRepository lessonRepository;
+    private final ProfileRepository profileRepository;
+    private final OutsourcingRepository outsourcingRepository;
+    private final ProjectRepository projectRepository;
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
@@ -178,12 +193,27 @@ public class TeamServiceImpl implements TeamService {
             return new ResponseTeam(ExceptionCode.USER_FIND_NOT);
         }
 
+        Optional<Profile> findProfile = profileRepository.findByUserIdAndStatus(userId, STATUS);
+        if (findProfile.isEmpty()) {
+            return new ResponseUser(ExceptionCode.USER_PROFILE_FIND_NOT);
+        }
+        Profile profile = findProfile.get();
+
+        Optional<Lesson> findLesson = lessonRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+        Optional<Project> findProject = projectRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+        Optional<Outsourcing> findOutsourcing = outsourcingRepository.findByProfileIdAndStatus(profile.getId(), STATUS);
+
+        if (findLesson.isEmpty() || findProject.isEmpty() || findOutsourcing.isEmpty()) {
+            return new ResponseUser(ExceptionCode.PROFILES_FIND_NOT);
+        }
+
         List<FindBoardListDto> board = myBoardPagesBy(userId);
         List<Team> result1 = findCompleteTeam(userId);
         List<Team> result2 = findUserTeam(userId);
         List<Team> result3 = findApplyTeam(userId);
-        return new ResponseUserTeam(ExceptionCode.TEAM_FIND_OK, board,
-                result1, result2, result3);
+        return new ResponseUserTeam
+                (ExceptionCode.TEAM_FIND_OK, findLesson.get().isOpen(), findProject.get().isOpen(), findOutsourcing.get().isOpen(),
+                board, result1, result2, result3);
     }
 
     public List<FindBoardListDto> myBoardPagesBy(Long uid) {
