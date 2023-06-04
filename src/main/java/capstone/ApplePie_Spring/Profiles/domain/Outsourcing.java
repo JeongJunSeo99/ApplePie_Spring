@@ -23,7 +23,7 @@ public class Outsourcing extends BaseEntity {
     @Column(nullable = false)
     private String career;
 
-    @Column(name = "outsourcing_self", nullable = false)
+    @Column(name = "outsourcing_self")
     private String outsourcingSelf;
 
     @Column(nullable = false)

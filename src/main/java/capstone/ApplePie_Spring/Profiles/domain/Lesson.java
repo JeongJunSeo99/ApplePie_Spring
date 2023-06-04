@@ -23,7 +23,7 @@ public class Lesson extends BaseEntity {
     @Column(nullable = false)
     private String subject;
 
-    @Column(name = "lesson_self", nullable = false)
+    @Column(name = "lesson_self")
     private String lessonSelf;
 
 

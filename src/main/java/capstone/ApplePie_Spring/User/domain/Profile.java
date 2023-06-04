@@ -7,6 +7,7 @@ import capstone.ApplePie_Spring.Team.domain.Team;
 import capstone.ApplePie_Spring.User.dto.ProfileDto;
 import capstone.ApplePie_Spring.User.dto.SignupDto;
 import capstone.ApplePie_Spring.config.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -62,15 +63,19 @@ public class Profile extends BaseEntity {
     private List<Language> devLanguage;
 
     // 연관 관계 매핑
+    @JsonIgnore
     @OneToOne // (fetch = FetchType.LAZY)는 일대일 매핑에서 오류
     private User user;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "profile")
     private Project project;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "profile")
     private Lesson lesson;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "profile")
     private Outsourcing outsourcing;
 

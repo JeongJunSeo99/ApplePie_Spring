@@ -23,7 +23,7 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private String part;
 
-    @Column(name = "project_self", nullable = false)
+    @Column(name = "project_self")
     private String projectSelf;
 
     @Column(nullable = false)

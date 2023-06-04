@@ -20,10 +20,10 @@ public class ProfilesController {
         return new ResponseEntity<>(profilesService.findProfiles(profilesFindDto), HttpStatus.OK);
     }
 
-    /*@PostMapping("/one") // get
+    @PostMapping("/one") // get
     public ResponseEntity<Object> findProject(@RequestBody OneProfilesFindDto oneProfilesFindDto) {
         return new ResponseEntity<>(profilesService.findOneProfiles(oneProfilesFindDto), HttpStatus.OK);
-    }*/
+    }
 
 
     @PostMapping("/{pid}")
