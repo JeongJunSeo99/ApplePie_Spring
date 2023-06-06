@@ -41,11 +41,10 @@ public class ProfilesServiceImpl implements ProfilesService {
 
     @Override
     public Object findProfiles(ProfilesFindDto profilesFindDto) {
-
-        if (profilesFindDto.getCategory().equals(Board.Category.OUTSOURCING)) {
+        if (Board.Category.getValue(profilesFindDto.getCategoryId()).equals(Board.Category.OUTSOURCING)) {
             return new ResponseOutsourcingList(ExceptionCode.PROFILES_FIND_OK, findOutsourcing(profilesFindDto));
         }
-        else if (profilesFindDto.getCategory().equals(Board.Category.LESSON)) {
+        else if (Board.Category.getValue(profilesFindDto.getCategoryId()).equals(Board.Category.LESSON)) {
             return new ResponseLessonList(ExceptionCode.PROFILES_FIND_OK, findLesson(profilesFindDto));
         }
         else {

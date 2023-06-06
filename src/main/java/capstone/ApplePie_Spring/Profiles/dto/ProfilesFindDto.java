@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 @Getter
 public class ProfilesFindDto {
-    private Board.Category category;
+    private int categoryId;
     private int size;
     @Nullable
     private Long id; // 전달된 마지막 profiles id
