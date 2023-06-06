@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -53,7 +54,7 @@ public class AIService {
         //if문으로 지원 내역 존재하는지 체크
         if(ai.isEmpty()){
             //List<Board> team_all_board = boardRepository.ViewCount(category1, STATUS);
-            List<Board> team_all_board = boardRepository.findAllByCategoryAndStatusOrderByViewCountDesc(category1, STATUS);
+            List<Board> team_all_board = boardRepository.findAllByCategoryAndStatusAndDeadlineGreaterThanEqualOrderByViewCountDesc(category1, LocalDate.now(), STATUS);
 
 
             System.out.println(team_all_board);
@@ -75,7 +76,7 @@ public class AIService {
 
         }
         else{
-            List<Board> board_1 = boardRepository.findAllByCategoryAndStatus(category1, STATUS);
+            List<Board> board_1 = boardRepository.findAllByCategoryAndStatusAndDeadlineGreaterThanEqual(category1, LocalDate.now(), STATUS);
 
             System.out.println(category1);
             System.out.println(board_1);

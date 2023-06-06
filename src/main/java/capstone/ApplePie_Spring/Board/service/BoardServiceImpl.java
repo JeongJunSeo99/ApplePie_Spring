@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -178,7 +179,8 @@ public class BoardServiceImpl implements BoardService {
             return new ResponseNoProfiles(ExceptionCode.USER_PROFILE_FIND_NOT);
         }
 
-        List<Board> findBoard = boardRepository.findAllByUserIdAndStatusOrderByIdDesc(findUser.get().getId(), STATUS);
+        List<Board> findBoard = boardRepository
+                .findAllByUserIdAndStatusAndDeadlineGreaterThanEqualOrderByIdDesc(findUser.get().getId(), STATUS, LocalDate.now());
         List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
         for (Board board : findBoard) {
             findBoardListDtoList.add(FindBoardListDto.builder()
@@ -196,13 +198,15 @@ public class BoardServiceImpl implements BoardService {
         Long checkId = findBoardDto.getId();
         if (checkId == null) { // 처음 조회
             if (findBoardDto.getKeyword() == null)
-                return boardRepository.findAllByCategoryAndStatusOrderByIdDesc(category, STATUS, pageRequest);
-            return boardRepository.findAllByCategoryAndStatusAndTitleContainingOrderByIdDesc(category, findBoardDto.getKeyword(), STATUS, pageRequest);
+                return boardRepository.findAllByCategoryAndStatusAndDeadlineGreaterThanEqualOrderByIdDesc(category, STATUS, LocalDate.now(), pageRequest);
+            return boardRepository.findAllByCategoryAndStatusAndTitleContainingAndDeadlineGreaterThanEqualOrderByIdDesc(category, findBoardDto.getKeyword(), STATUS, LocalDate.now(), pageRequest);
         }
         else { // 불러오기
             if (findBoardDto.getKeyword() == null)
-                return boardRepository.findAllByIdLessThanAndCategoryAndStatusOrderByIdDesc(findBoardDto.getId(), category, STATUS, pageRequest);
-            return boardRepository.findAllByIdLessThanAndCategoryAndStatusAndTitleContainingOrderByIdDesc(findBoardDto.getId(), category, STATUS, findBoardDto.getKeyword(), pageRequest);
+                return boardRepository.findAllByIdLessThanAndCategoryAndStatusAndDeadlineGreaterThanEqualOrderByIdDesc
+                        (findBoardDto.getId(), category, STATUS, LocalDate.now(), pageRequest);
+            return boardRepository.findAllByIdLessThanAndCategoryAndStatusAndTitleContainingAndDeadlineGreaterThanEqualOrderByIdDesc
+                    (findBoardDto.getId(), category, STATUS, findBoardDto.getKeyword(), LocalDate.now(), pageRequest);
         }
     }
 

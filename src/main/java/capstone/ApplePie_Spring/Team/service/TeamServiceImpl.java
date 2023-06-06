@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -217,7 +218,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     public List<FindBoardListDto> myBoardPagesBy(Long uid) {
-        List<Board> findBoard = boardRepository.findAllByUserIdAndStatusOrderByIdDesc(uid, STATUS);
+        List<Board> findBoard = boardRepository.findAllByUserIdAndStatusAndDeadlineGreaterThanEqualOrderByIdDesc(uid, STATUS, LocalDate.now());
         List<FindBoardListDto> findBoardListDtoList = new ArrayList<>();
         for (Board board : findBoard) {
             findBoardListDtoList.add(FindBoardListDto.builder()
