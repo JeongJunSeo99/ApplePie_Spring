@@ -43,6 +43,10 @@ public class MemberServiceImpl implements MemberService {
             return new ResponseTeam(ExceptionCode.TEAM_FIND_NOT);
         }
 
+        if (findVolunteer.get().getUser().getId().equals(findTeam.get().getUser().getId())) {
+            return new ResponseTeam(ExceptionCode.WRONG_APPROACH);
+        }
+
         Team team = findTeam.get();
         Member member = Member.builder()
                 .team(team)
@@ -60,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
         //System.out.println("total = " + total);
         int n = 0;
         while (n < team.getCount().size()) {
-            if (total.get(n) < count.get(n)) {
+            if (total.get(n) > count.get(n)) {
                 return new ResponseMember(ExceptionCode.MEMBER_OK, team.getCount(), team.getTotalCount());
             }
             n++;
