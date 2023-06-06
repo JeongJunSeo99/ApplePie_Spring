@@ -56,8 +56,8 @@ public class MemberServiceImpl implements MemberService {
         List<Integer> total = team.getTotalCount();
         List<Integer> count = team.getCount();
 
-        System.out.println("count = " + count);
-        System.out.println("total = " + total);
+        //System.out.println("count = " + count);
+        //System.out.println("total = " + total);
         int n = 0;
         while (n < team.getCount().size()) {
             if (total.get(n) < count.get(n)) {

@@ -1,6 +1,7 @@
 package capstone.ApplePie_Spring.Team.domain;
 
 import capstone.ApplePie_Spring.config.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -19,11 +20,11 @@ public class Member extends BaseEntity {
     private Long id;
 
     // 연관 관계 매핑
-    @JsonIgnoreProperties
+    @JsonIgnore
     @ManyToOne
     private Team team;
 
-    @JsonIgnoreProperties
+    @JsonIgnore
     @ManyToOne
     private Volunteer volunteer;
 

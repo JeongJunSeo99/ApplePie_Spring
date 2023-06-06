@@ -72,11 +72,11 @@ public class Team extends BaseEntity {
     @OneToOne
     private Board board;
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "team")
     private List<Volunteer> volunteers = new ArrayList<>();
 
