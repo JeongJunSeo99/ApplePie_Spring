@@ -28,10 +28,10 @@ public class Board extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 300)
     private String content;
 
     private int viewCount;
@@ -91,6 +91,7 @@ public class Board extends BaseEntity {
             file.delete();
         }
         files.clear();
+        this.team.delete();
         super.delete();
     }
 

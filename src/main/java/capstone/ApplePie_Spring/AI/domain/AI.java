@@ -21,10 +21,10 @@ public class AI {
 
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 300)
     private String content;
 
     private int role;
