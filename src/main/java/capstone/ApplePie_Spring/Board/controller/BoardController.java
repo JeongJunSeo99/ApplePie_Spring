@@ -25,7 +25,7 @@ public class BoardController {
 
     // 글 생성
     @PostMapping
-    @Operation(summary = "글 생성")
+    @Operation(summary = "글 생성 : file로 인해 swagger에 test 불가")
     public ResponseEntity<Object> createBoard(
             @RequestPart(value = "board") BoardSaveDto boardSaveDto,
             @RequestPart(value = "file", required = false) List<MultipartFile> files) throws Exception {
