@@ -19,33 +19,33 @@ public class ProfilesController {
     private final ProfilesService profilesService;
 
     @PostMapping // get
-    @Operation(summary = "프로젝트 전체 조회")
+    @Operation(summary = "프로필 전체 조회")
     public ResponseEntity<Object> findProject(@RequestBody ProfilesFindDto profilesFindDto) {
         return new ResponseEntity<>(profilesService.findProfiles(profilesFindDto), HttpStatus.OK);
     }
 
     @PostMapping("/one") // get
-    @Operation(summary = "프로젝트 하나 조회")
+    @Operation(summary = "프로필 하나 조회")
     public ResponseEntity<Object> findProject(@RequestBody OneProfilesFindDto oneProfilesFindDto) {
         return new ResponseEntity<>(profilesService.findOneProfiles(oneProfilesFindDto), HttpStatus.OK);
     }
 
 
     @PostMapping("/{pid}")
-    @Operation(summary = "프로젝트 저장")
+    @Operation(summary = "프로필 저장")
     public ResponseEntity<Object> saveProject(@PathVariable Long pid, @RequestBody ProfilesDto profilesDto) {
         return new ResponseEntity<>(profilesService.saveProfiles(pid, profilesDto), HttpStatus.OK);
     }
 
     @PutMapping("/{pid}")
-    @Operation(summary = "프로젝트 전체 수정")
+    @Operation(summary = "프로필 전체 수정")
     public ResponseEntity<Object> updateProject(@PathVariable Long pid, @RequestBody ProfilesDto profilesDto) {
         return new ResponseEntity<>(profilesService.updateProfiles(pid, profilesDto), HttpStatus.OK);
     }
 
     // open 상태 변경
     @PutMapping("/open/{pid}")
-    @Operation(summary = "프로젝트 상태 변경")
+    @Operation(summary = "프로필 상태 변경")
     public ResponseEntity<Object> updateOpenLesson(@PathVariable Long pid, @RequestBody OpenDto openDto) {
         return new ResponseEntity<>(profilesService.openProfiles(pid, openDto), HttpStatus.OK);
     }
