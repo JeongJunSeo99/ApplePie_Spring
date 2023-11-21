@@ -20,7 +20,7 @@ public class ResponseMembers extends ResponseType {
         member = new ArrayList<>();
         for(Member m: members) {
             Volunteer v = m.getVolunteer();
-            member.add(new FindMemberListDto(v.getUser().getId(), v.getUser().getNickname(),
+            member.add(new FindMemberListDto(v.getId(), v.getUser().getNickname(),
                     v.getRole()));
         }
     }
