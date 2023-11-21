@@ -26,11 +26,11 @@ public class ResponseVolunteerList extends ResponseType {
         for(Volunteer v: volunteers) {
             if (v.getVolunteerStatus().equals(Volunteer.VolunteerStatus.APPLY)) {
                 volunteerList.add(new VolunteerStatusDto(v.getId(), v.getRole(),
-                        v.getVolunteerStatus(), v.getApplication()));
+                        v.getVolunteerStatus(), v.getApplication(), v.getUser().getNickname()));
             }
             else {
                 memberList.add(new VolunteerStatusDto(v.getId(), v.getRole(),
-                        v.getVolunteerStatus(), v.getApplication()));
+                        v.getVolunteerStatus(), v.getApplication(), v.getUser().getNickname()));
             }
         }
         this.count = count;
